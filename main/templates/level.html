@@ -1,0 +1,40 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+<div class="list-group">
+{% for section in sections %}
+	<div class="list-group-item">
+		<div class="row">
+			<div class="col-sm-6">
+				Section {{ section.order }}: kanji {{ section.start_kanji }} - {{ section.end_kanji }}
+			</div>
+			<div class="col-sm-6">
+				<div class="btn-group">
+					<a href="{% url 'study' %}?level={{section.level.order}}&section={{section.order}}&kanji=1" class="btn btn-primary btn-sm">kanji</a>
+					<a href="#" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"><span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="#">study</a></li>
+						<li><a href="#">recognition practice</a></li>
+						<li><a href="#">writing practice</a></li>
+						<li class="divider"></li>
+						<li><a href="#">Separated link</a></li>
+					</ul>
+				</div>
+				<div class="btn-group">
+					<a href="#" class="btn btn-primary btn-sm">vocabulary</a>
+					<a href="#" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"><span class="caret"></span></a>
+					<ul class="dropdown-menu">
+						<li><a href="#">study</a></li>
+						<li><a href="#">reading practice</a></li>
+					</ul>
+				</div>
+			</div> 
+		</div>
+	</div>
+{% endfor %}
+</div>
+
+
+
+{% endblock %}

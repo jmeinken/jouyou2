@@ -1,0 +1,20 @@
+{% extends 'core/base.html' %}
+
+
+{% block content %}
+word page<br>
+
+<span class="text-warning" style="font-size:80px">{{kanji.kanji}}</span><br>
+
+{{ word.word }}<br><br>
+{{ word.definition }}<br><br>
+
+{% for fg in word.wordfurigana_set.all %}
+	{{fg.furigana}}&nbsp;&nbsp;
+{% endfor %}
+<br>
+{% for char in word.word %}
+	{{char}}&nbsp;&nbsp;
+{% endfor %}
+
+{% endblock %}

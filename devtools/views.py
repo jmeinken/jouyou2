@@ -5,16 +5,21 @@ import time
 from django.shortcuts import render, redirect
 from django.db import connection
 
-import sys
+
 
 
 from . import models
+from .functions import check_components, scrape_jisho
 
 # Create your views here.
 
 
 def dashboard(request):
-    context = {}
+    context = {
+        'action' : 'scrape kanjidamage site',
+    }
+    if request.method != "POST":
+        return render(request, 'devtools/start_action.html', context)
     context['results'] = []
     url = "http://www.kanjidamage.com/kanji"
     page = html.fromstring(urllib.urlopen(url).read())
@@ -56,7 +61,11 @@ def dashboard(request):
     return render(request, 'devtools/dashboard.html', context)
 
 def  import_kanji_data(request):
-    context = {}
+    context = {
+        'action' : 'import data from kanji_table.txt',
+    }
+    if request.method != "POST":
+        return render(request, 'devtools/start_action.html', context)
     file = open('/home/ubuntu/django/jouyou-env/jouyou/devtools/data/kanji_table.txt', 'r')
     results = []
     is_first_line = True
@@ -78,15 +87,22 @@ def  import_kanji_data(request):
             kd_link = spl[2],
             most_used_order = spl[3],
             hybrid_order = spl[4],
+            meaning = spl[5],
+            pronunciation = spl[6],
         )
         m.save()
         results.append(spl[1])
     context = {
         'results' : results,       
     }
-    return render(request, 'devtools/import_data.html', context)
+    return render(request, 'devtools/start_action.html', context)
 
 def  import_kanji_component_data(request):
+    context = {
+        'action' : 'import data from kanji_component_table.txt',
+    }
+    if request.method != "POST":
+        return render(request, 'devtools/start_action.html', context)
     context = {}
     file = open('/home/ubuntu/django/jouyou-env/jouyou/devtools/data/kanji_component_table.txt', 'r')
     results = []
@@ -113,10 +129,14 @@ def  import_kanji_component_data(request):
     context = {
         'results' : results,       
     }
-    return render(request, 'devtools/import_data.html', context)
+    return render(request, 'devtools/start_action.html', context)
 
 def hybrid_sort(request):
-    context = {}
+    context = {
+        'action' : 'sort kanji using hybrid sort',
+    }
+    if request.method != "POST":
+        return render(request, 'devtools/start_action.html', context)
     results = []
     kanji_queryset = models.Kanji.objects.all().exclude(most_used_order__isnull=True).order_by('most_used_order')
     # results.append('start');
@@ -135,60 +155,131 @@ def hybrid_sort(request):
     context = {
         'results' : results,       
     }
-    return render(request, 'devtools/import_data.html', context)
+    return render(request, 'devtools/start_action.html', context)
 
-def check_components_old(kanji_staging, kanji_complete, results):
-    if len(kanji_staging) == 0:
-        return
-    kanji_id = kanji_staging[0]
-    kanji = models.Kanji.objects.get(id=kanji_id)
-    # results.append('starting ' + kanji.kanji)
-    if kanji_id in kanji_complete:
-        # results.append('removing completed kanji' + kanji.kanji)
-        kanji_staging.pop(0)
-        check_components(kanji_staging, kanji_complete, results)
-    for kanji_component in kanji.kanji_set.all():
-        component_kanji = kanji_component.component
-        if component_kanji.id in kanji_complete:
-            # results.append('continue because ' + component_kanji.kanji + 'already in complete for ' + kanji.kanji);
+def import_words(request):
+    context = {
+        'action' : 'add words from word_table.com to database',
+    }
+    if request.method != "POST":
+        return render(request, 'devtools/start_action.html', context)
+    results = []
+    file = open('/home/ubuntu/django/jouyou-env/jouyou/devtools/data/word_table.txt', 'r')
+    #x = 1
+    for line in file:
+        #x = x+1
+        #if x == 200:
+        #    break
+        fields = line.strip().split('\t')
+        ranking = fields[0]
+        word = fields[1].decode('utf-8')
+        # continue if word already exists in db
+        if models.Words.objects.filter(word=word):
             continue
-        else:
-            kanji_staging.insert(0, component_kanji.id)
-            # results.append('moving ' + component_kanji.kanji + 'before ' + kanji.kanji);
-            check_components(kanji_staging, kanji_complete, results)
-    # kanji_staging.remove(kanji.id)
-    if len(kanji_staging) == 0:
-        return
-    # results.append('copying ' + kanji.kanji + ' to complete');
-    kanji_complete.append(kanji.id)
-    # kanji_staging.remove(kanji.id)
-    check_components(kanji_staging, kanji_complete, results)
+        hybrid_orders = []
+        for char in word:
+            try:
+                kanji = models.Kanji.objects.get(kanji=char)
+            except:
+                kanji = None
+            if not kanji is None:
+                hybrid_orders.append(kanji.hybrid_order)
+        if not hybrid_orders:
+            continue
+        max_hybrid = max(hybrid_orders)
+        meaning, furigana = scrape_jisho(word)
+        if not meaning:
+            continue
+        w = models.Words(
+            word = word, 
+            max_hybrid_order = max_hybrid,
+            word_ranking = ranking,
+            definition = meaning,
+        )
+        w.save()
+        i = 1
+        for fg in furigana:
+            if not fg is None:
+                f = models.WordFurigana(
+                    word = w, 
+                    position = i,
+                    furigana = fg
+                )
+                f.save()
+            i = i + 1
+        results.append({
+            'word' : word,
+            'ranking' : ranking,
+            'max_hybrid' : max_hybrid,
+            'def' : meaning,
+            'furigana' : furigana,
+        })
+    context['results'] = results
+    return render(request, 'devtools/start_action.html', context)
+
+def populate_level(request):
+    context = {
+        'action' : 'erase and repopulate level table',
+    }
+    if request.method != "POST":
+        return render(request, 'devtools/start_action.html', context)
+    models.Level.objects.all().delete()
+    level = models.Level(
+        name = 'Level 1',
+        label = 'First 100',
+        order = 1
+    )
+    level.save()
+    level = models.Level(
+        name = 'Level 2',
+        label = '101 - 300',
+        order = 2
+    )
+    level.save()
+    level = models.Level(
+        name = 'Level 3',
+        label = '301-500',
+        order = 3
+    )
+    level.save()
+    results = models.Level.objects.all()
+    context['results'] = results
+    return render(request, 'devtools/start_action.html', context)
+
     
-def check_components(kanji_staging, kanji_complete, results):
-    sys.setrecursionlimit(10000)
-    for kanji_id in kanji_staging:
-        if kanji_id in kanji_complete:
+def populate_section(request):
+    context = {
+        'action' : 'erase and repopulate section table',
+    }
+    if request.method != "POST":
+        return render(request, 'devtools/start_action.html', context)
+    models.Section.objects.all().delete()
+    level = models.Level.objects.get(order=1)
+    section_arr = [0, 15, 30, 45, 60, 75, 90, 100]
+    add_section(level, section_arr)
+    level = models.Level.objects.get(order=2)
+    section_arr = [100, 115, 130, 145, 160, 175, 190, 200, 215, 230, 245, 260, 275, 290, 300]
+    add_section(level, section_arr)
+    level = models.Level.objects.get(order=3)
+    section_arr = [300, 315, 330, 345, 360, 375, 390, 400, 415, 430, 445, 460, 475, 490, 500]
+    add_section(level, section_arr)
+    results = models.Section.objects.all()
+    context['results'] = results
+    
+    return render(request, 'devtools/start_action.html', context)
+
+def add_section(level, section_arr):
+    i = 0
+    for section in section_arr:
+        if i == 0:
+            i = i + 1
             continue
-        preappend_dependencies(kanji_id, kanji_complete, results, 1)
-        kanji_complete.append(kanji_id)
+        section = models.Section(
+            order = i,
+            level = level,
+            start_kanji = section_arr[i-1]+1,
+            end_kanji = section_arr[i]
+        )
+        section.save()
+        i = i + 1
     return
-        
-        
-def preappend_dependencies(kanji_id, kanji_complete, results, depth):       
-    kanji = models.Kanji.objects.get(id=kanji_id)
-    # results.append("preappending dependencies for " + str(kanji.id) + " order " + str(kanji.most_used_order) + " depth " + str(depth))
-    # print("preappending dependencies for " + str(kanji.id) + " order " + str(kanji.most_used_order) + " depth " + str(depth))
-    for kanji_component in kanji.kanji_set.all():
-        component_kanji = kanji_component.component
-        if component_kanji.id in kanji_complete:
-            continue
-        else:
-            preappend_dependencies(component_kanji.id, kanji_complete, results, depth+1)
-            kanji_complete.append(component_kanji.id)
-
-
-
-
-
-
-

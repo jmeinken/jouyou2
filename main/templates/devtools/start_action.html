@@ -1,0 +1,10 @@
+<form action="" method="POST">
+    {% csrf_token %}
+	<button type="submit" class="btn btn-primary">{{ action }}</button>
+</form>
+
+
+{% for result in results %}
+	{{result}}<br>
+	{{result.word}}<br>
+{% endfor %}

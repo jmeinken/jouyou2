@@ -1,0 +1,186 @@
+{% extends 'core/base.html' %}
+
+{% load staticfiles %}
+
+
+
+
+{% block content %}
+
+<script>
+
+$( document ).ready(function() {
+	
+	$('#show-more-info').click(function() {
+		$('#more-info').toggle();
+		return false;
+	});
+	
+});
+
+</script>
+
+<style>
+#left-control {
+	position: absolute;
+	top: 100px;
+	left: 2px
+}
+#right-control {
+	position: absolute;
+	top: 100px;
+	right: 2px;
+}
+a.subtle-control {
+	color: #d9d9d9;
+}
+a.subtle-control:hover {
+	color: #18BC9C;
+	text-decoration: none;
+}
+#pronunciation {
+	font-size: 27px;
+	padding-top: 22px;
+}
+#meaning {
+	font-size: 20px;
+}
+#info-table td {
+	padding: 3px 8px;
+	vertical-align: middle;
+}
+#info-table th {
+	padding: 3px 8px;
+	vertical-align: middle;
+	font-weight: normal;
+}
+#info-table {
+	width: 100%;
+}
+
+</style>
+
+
+
+<div class="row">
+	<div class="col-sm-6 col-sm-offset-3">
+		<div class="panel panel-primary" style="position:relative">
+		    <div class="panel-heading">
+		    	<div style="float:right">
+		    		<a class="invert" href="">level 1</a> 
+		    		| 
+		    		<a class="invert" href="">section 3</a>
+		    	</div>
+		    	3/15
+		    </div>
+			<div class="panel-body" style="padding:5px 30px;">
+				<div class="row">
+					<div class="col-xs-6">
+						{% if kanji.is_image %}
+							<img src="{% static 'img'%}/{{kanji.img_path}}" alt="{{kanji.meaning}}" style="padding:30px 5px"  />
+						{% else %}
+							<span class="text-warning" style="font-size:80px">{{kanji.kanji}}</span><br>
+						{% endif %}
+					</div>
+					<div class="col-xs-6">
+						<div id="pronunciation" class="text-warning">
+							{{kanji.pronunciation}}
+						</div>
+						<div id="meaning" class="text-warning">
+							{{kanji.meaning}}
+						</div>
+					</div>
+				</div>
+				<table id="info-table" class="table table-striped">
+					{% if kanji.kanji_set.all %}
+						<tr>
+							<th>components</th>
+							<td style="font-size: 30px;" class="text-warning">
+								{% for comp in kanji.kanji_set.all %}
+									<a  class="clickable-kanji" data-container="body"
+									data-toggle="popover" data-placement="top" data-content="<a href='http://google.com'>{{ comp.component.pronunciation }}</a>" 
+									data-html="true">{{ comp.component.kanji }}</a>&nbsp;&nbsp;
+								{% endfor %}
+							</td>
+						</tr>
+					{% endif %}
+					<tr>
+						<th>mnemonic</th>
+						<td>{{ mnemonic|default_if_none:'' }}</td>
+					</tr>
+					<tr>
+						<th>ranking</th>
+						<td>{{kanji.hybrid_order}}</td>
+					</tr>
+				</table>
+				<div style="text-align: center;">
+					<a href="http://kanjidamage.com{{kanji.kd_link}}" target="_blank">Joshi.org</a>
+					&nbsp;&nbsp;|&nbsp;&nbsp;
+					<a href="http://kanjidamage.com{{kanji.kd_link}}" target="_blank">Kanji damage</a>
+				</div>
+			</div>
+			<div class="panel-footer">
+				<a href="#" id="show-more-info">more<i class="fa fa-caret-down" aria-hidden="true"></i></a>
+				<div id="more-info" style="display:none;">		
+					<form action="" method="post">
+						{% csrf_token %}
+						<input type="hidden" name="kanji_id" value="{{kanji.id}}" />
+						<input type="hidden" name="kanji_number" value="{{kanji_number}}" />
+						<div class="form-group">
+							<div class="checkbox">
+					            <label>
+					                <input type="checkbox" name="is_image" {% if kanji.is_image %}checked{% endif %}> Is image
+					            </label>
+					        </div>
+					        <div class="checkbox">
+					            <label>
+					                <input type="checkbox" name="is_kanji" {% if kanji.is_kanji %}checked{% endif %}> Is kanji
+					            </label>
+					        </div>
+					        <label for="inputEmail" class="control-label">Pronunciation</label>
+					        <input class="form-control" type="text" name="pronunciation" value="{{kanji.pronunciation|default_if_none:''}}">
+					        <label for="inputEmail" class="control-label">Meaning</label>
+					        <input class="form-control" type="text" name="meaning" value="{{kanji.meaning|default_if_none:''}}">
+					        <label for="inputEmail" class="control-label">Image Path</label>
+					        <input class="form-control" type="text" name="img_path" value="{{kanji.img_path|default_if_none:''}}">
+					        <label for="inputEmail" class="control-label">Mnemonic</label>
+					        <textarea class="form-control" name="mnemonic">{{mnemonic|default_if_none:''}}</textarea>
+					        <label for="inputEmail" class="control-label">Comment</label>
+					        <textarea class="form-control" name="comment">{{kanji.comment|default_if_none:''}}</textarea>
+					        <button type="submit" class="btn btn-primary">Submit</button>
+					    </div>
+					</form>
+				</div>	
+			</div>
+			
+			<div id="left-control">
+				{% if not first %}
+					<a class="subtle-control" href="{% url 'study' %}?level={{section.level.order}}&section={{section.order}}&kanji={{kanji_previous}}">
+						<span style="font-size:50px">&#8249;
+					</a>
+				{% endif %}
+			</div>
+			
+			<div id="right-control">
+				{% if last %}
+					<a href="{% url 'levels' %}?level={{section.level.order}}" class="subtle-control">
+						<i class="fa fa-angle-double-up" aria-hidden="true"></i> back to sections
+					</a><br>
+					<a href="#">
+						practice <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+					</a>
+				{% else %}
+					<a class="subtle-control" href="{% url 'study' %}?level={{section.level.order}}&section={{section.order}}&kanji={{kanji_next}}">
+						<span style="font-size:50px">&#8250;</span>
+					</a>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
+
+<span data-toggle="tooltip" data-placement="top" title="Tooltip on top">
+  Tooltip on top
+</span>
+
+{% endblock %}

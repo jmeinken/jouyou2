@@ -1,1 +1,14 @@
- hello world
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+{% for level in levels %}
+	<div>
+		{{ level.name }} <a href="{% url 'levels' %}?level={{level.order}}">go to level</a>
+		
+	</div>
+{% endfor %}
+
+
+
+{% endblock %}

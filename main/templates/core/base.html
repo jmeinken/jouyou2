@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{% load staticfiles %}<!DOCTYPE html>
 <html lang="en">
 <head>
   <title>Master the Jouyou</title>
@@ -7,8 +7,12 @@
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.6/flatly/bootstrap.min.css">
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+  <script src="{% static "js/tether.min.js" %}"></script>
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
   <link type="text/css" rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" media="all" />
+  
+  <link type="text/css" rel="stylesheet" href="{% static "css/jouyou.css" %}" />
+  <script src="{% static "js/jouyou.js" %}"></script>
   
 
 </head>
@@ -22,14 +26,14 @@
 	        <span class="icon-bar"></span>
 	        <span class="icon-bar"></span>
 	    </button>
-		<a class="navbar-brand" href="/analyst_tools/">
+		<a class="navbar-brand" href="{% url 'home' %}">
 	   		Master the Jouyou
 		</a>
   	</div>
 
   	<div class="collapse navbar-collapse" id="analyst_tools_navbar">
 		<ul class="nav navbar-nav">
-			<li><a href="/analyst_tools/">Home</a></li>
+			<li><a href="{% url 'home' %}">Home</a></li>
 		</ul>	
 		{% if user.is_authenticated %}
 	        <ul class="nav navbar-nav navbar-right">
@@ -55,7 +59,7 @@
 
 <footer class="container" style="border-top:solid 1px #b3b3b3; margin:10px auto;padding-top:5px;">
     <div style="font-size:25px; padding-top:15px;">
-    	<a href="https://chi.uc.edu" style="font-style:italic;color:#b3b3b3">Master the Jouyou</a> 
+    	<a href="#" style="font-style:italic;color:#b3b3b3">Master the Jouyou</a> 
     </div>
 </footer>
 

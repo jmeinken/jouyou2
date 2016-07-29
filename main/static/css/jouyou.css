@@ -1,0 +1,35 @@
+.navbar-inverse {
+	background-color: #2C3E50;
+}
+
+.text-warning, .text-warning:hover {
+    color: #ec7600;
+}
+
+a, a:hover, a:focus{
+	color: #b3b3b3;
+}
+
+a.invert, a.invert:hover, a.invert:focus{
+	color: #b3b3b3;
+}
+
+
+
+body {
+	color: #595959;
+}
+
+a.clickable-kanji {
+	color: #ec7600;
+	cursor: pointer; 
+	cursor: hand;
+}
+
+table a:not(.btn), .table a:not(.btn) {
+	text-decoration: none;	
+}
+
+table a:not(.btn):hover, .table a:not(.btn):hover, table a:not(.btn):focus, .table a:not(.btn):focus {
+	text-decoration: underline;	
+}
