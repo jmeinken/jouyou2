@@ -1,6 +1,7 @@
 {% extends 'core/base.html' %}
 
 {% load staticfiles %}
+{% load kanji_templates %}
 
 
 
@@ -67,25 +68,29 @@ a.subtle-control:hover {
 		<div class="panel panel-primary" style="position:relative">
 		    <div class="panel-heading">
 		    	<div style="float:right">
-		    		<a class="invert" href="">level 1</a> 
+		    		<a class="invert" href="{% url 'level' %}?level={{section.level.order}}">level {{section.level.order}}</a> 
 		    		| 
-		    		<a class="invert" href="">section 3</a>
+		    		<a class="invert" href="{% url 'section' %}?level={{section.level.order}}&section={{section.order}}">
+		    		    section {{section.order}}
+		    		</a>
 		    	</div>
-		    	3/15
+		    	{{kanji_number}}/{{count_in_section}}
 		    </div>
 			<div class="panel-body" style="padding:5px 30px;">
 				<div class="row">
 					<div class="col-xs-6">
-						{% if kanji.is_image %}
-							<img src="{% static 'img'%}/{{kanji.img_path}}" alt="{{kanji.meaning}}" style="padding:30px 5px"  />
-						{% else %}
-							<span class="text-warning" style="font-size:80px">{{kanji.kanji}}</span><br>
-						{% endif %}
+						{{ kanji.get_big_kanji|safe }}
 					</div>
 					<div class="col-xs-6">
-						<div id="pronunciation" class="text-warning">
-							{{kanji.pronunciation}}
-						</div>
+						{% if kanji.is_kanji %}
+							<div id="pronunciation" class="text-warning">
+								{{kanji.pronunciation}}
+							</div>
+						{% else %}
+							<div style="padding-top: 30px;padding-bottom: 10px;">
+								<span class="label label-default">not a kanji</span>
+							</div>
+						{% endif %}
 						<div id="meaning" class="text-warning">
 							{{kanji.meaning}}
 						</div>
@@ -97,9 +102,7 @@ a.subtle-control:hover {
 							<th>components</th>
 							<td style="font-size: 30px;" class="text-warning">
 								{% for comp in kanji.kanji_set.all %}
-									<a  class="clickable-kanji" data-container="body"
-									data-toggle="popover" data-placement="top" data-content="<a href='http://google.com'>{{ comp.component.pronunciation }}</a>" 
-									data-html="true">{{ comp.component.kanji }}</a>&nbsp;&nbsp;
+									{{comp.component.get_little_kanji|tag_kanji:user|safe}}&nbsp;&nbsp;
 								{% endfor %}
 							</td>
 						</tr>
@@ -110,18 +113,36 @@ a.subtle-control:hover {
 					</tr>
 					<tr>
 						<th>ranking</th>
-						<td>{{kanji.hybrid_order}}</td>
+						<td>{{kanji.most_used_order}}</td>
 					</tr>
 				</table>
 				<div style="text-align: center;">
-					<a href="http://kanjidamage.com{{kanji.kd_link}}" target="_blank">Joshi.org</a>
+					<a href="http://jisho.org/word/{{kanji.kanji}}" target="_blank">Joshi.org</a>
 					&nbsp;&nbsp;|&nbsp;&nbsp;
 					<a href="http://kanjidamage.com{{kanji.kd_link}}" target="_blank">Kanji damage</a>
 				</div>
 			</div>
 			<div class="panel-footer">
 				<a href="#" id="show-more-info">more<i class="fa fa-caret-down" aria-hidden="true"></i></a>
-				<div id="more-info" style="display:none;">		
+				<div id="more-info" style="display:none;">	
+					{% if vocab %}
+						<table class="table">
+							<tr>
+								<th>Word</th>
+								<th>Rank</th>
+								<th>Definition</th>
+							</tr>
+							{% for word in vocab %}
+								<tr>
+									<td>
+										{% include "snippets/word_with_furigana.html" %}
+									</td>
+									<td>{{word.ranking}}</td>
+									<td>{{word.definition}}</td>
+								</tr>
+							{% endfor %}	
+						</table>
+					{% endif %}
 					<form action="" method="post">
 						{% csrf_token %}
 						<input type="hidden" name="kanji_id" value="{{kanji.id}}" />
@@ -158,16 +179,17 @@ a.subtle-control:hover {
 					<a class="subtle-control" href="{% url 'study' %}?level={{section.level.order}}&section={{section.order}}&kanji={{kanji_previous}}">
 						<span style="font-size:50px">&#8249;
 					</a>
+				{% else %}
+					<a class="subtle-control" href="{% url 'section' %}?level={{section.level.order}}&section={{section.order}}">
+						<span style="font-size:50px">&#8249;
+					</a>
 				{% endif %}
 			</div>
 			
 			<div id="right-control">
 				{% if last %}
-					<a href="{% url 'levels' %}?level={{section.level.order}}" class="subtle-control">
-						<i class="fa fa-angle-double-up" aria-hidden="true"></i> back to sections
-					</a><br>
-					<a href="#">
-						practice <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+					<a class="subtle-control" href="{% url 'section' %}?level={{section.level.order}}&section={{section.order}}">
+						<span style="font-size:50px">&#8250;
 					</a>
 				{% else %}
 					<a class="subtle-control" href="{% url 'study' %}?level={{section.level.order}}&section={{section.order}}&kanji={{kanji_next}}">

@@ -2,10 +2,8 @@
 
 {% block content %}
 
-{{ last_section_completed }}
 
-<div class="list-group">
-{% for section in sections %}
+
 	<div class="list-group-item">
 		<div class="row">
 			{% if section.id < current_section %}
@@ -20,7 +18,7 @@
 						<ul class="dropdown-menu">
 							<li><a href="{% url 'study' %}?level={{section.level.order}}&section={{section.order}}&kanji=1">study</a></li>
 							<li><a href="{% url 'practice' %}?level={{section.level.order}}&section={{section.order}}&kanji=1">recognition practice</a></li>
-							<li><a href="#">writing practice</a></li>
+							<li><a href="{% url 'practice' %}?level={{section.level.order}}&section={{section.order}}&kanji=1&invert=true">writing practice</a></li>
 							<li class="divider"></li>
 							<li><a href="#">Separated link</a></li>
 						</ul> 
@@ -94,9 +92,5 @@
 			{% endif %}
 		</div>
 	</div>
-{% endfor %}
-</div>
-
-
-
+	
 {% endblock %}

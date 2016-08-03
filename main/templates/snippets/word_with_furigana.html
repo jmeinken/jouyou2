@@ -1,0 +1,14 @@
+{% load kanji_templates %}
+<table class="furigana-table">
+	<tr>
+		{% for char in word.word %}
+			<td>{{char.1}}</td>
+		{% endfor %}
+	</tr>
+	<tr>
+		{% for char in word.word %}
+			<th>{{char.0|tag_kanji:user|safe}}</th>
+		{% endfor %}
+	</tr>
+</table>
+

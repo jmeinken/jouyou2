@@ -1,0 +1,150 @@
+{% extends 'core/base.html' %}
+
+{% load staticfiles %}
+{% load kanji_templates %}
+
+
+
+
+{% block content %}
+
+<script>
+
+$( document ).ready(function() {
+	
+	$('#show-more-info').click(function() {
+		$('#more-info').toggle();
+		return false;
+	});
+	
+});
+
+</script>
+
+<style>
+#left-control {
+	position: absolute;
+	top: 100px;
+	left: 2px
+}
+#right-control {
+	position: absolute;
+	top: 100px;
+	right: 2px;
+}
+a.subtle-control {
+	color: #d9d9d9;
+}
+a.subtle-control:hover {
+	color: #18BC9C;
+	text-decoration: none;
+}
+#pronunciation {
+	font-size: 27px;
+	padding-top: 22px;
+}
+#meaning {
+	font-size: 20px;
+}
+#info-table td {
+	padding: 3px 8px;
+	vertical-align: middle;
+}
+#info-table th {
+	padding: 3px 8px;
+	vertical-align: middle;
+	font-weight: normal;
+}
+#info-table {
+	width: 100%;
+}
+
+</style>
+
+
+
+<div class="row">
+	<div class="col-sm-6 col-sm-offset-3">
+		<div class="panel panel-primary" style="position:relative">
+		    <div class="panel-heading">
+		    	<div style="float:right">
+		    		<a class="invert" href="{% url 'level' %}?level={{section.level.order}}">level {{section.level.order}}</a> 
+		    		| 
+		    		section {{section.order}}
+		    	</div>
+		    	Writing Practice
+		    </div>
+			<div class="panel-body" style="padding:5px 30px;">
+				<div class="row">
+					<div class="col-xs-6">
+						{{ kanji.pronunciation }}<br>
+						{{ kanji.meaning }}
+					</div>
+					<div class="col-xs-6">
+						<div style="padding-top:30px;">
+							{% if kanji.is_kanji %}
+								write kanji
+							{% else %}
+								draw component
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="panel-footer">
+				<a href="#" id="show-more-info">answer<i class="fa fa-caret-down" aria-hidden="true"></i></a>
+				<div id="more-info" style="display:none;">	
+					<br>
+					{% if not kanji.is_kanji %}
+						<div class="alert alert-dismissible alert-warning">not a kanji</div>
+					{% endif %}
+					<table class="table table-striped">
+						<tr>
+							<td>kanji</td>
+							<td>{{kanji.get_little_kanji|safe}}</td>
+						</tr>
+						<tr>
+							<td>mnemonic</td>
+							<td>{{mnemonic}}</td>
+						</tr>
+					</table>
+					<div style="text-align: center;">
+						<a href="http://jisho.org/word/{{kanji.kanji}}" target="_blank">Joshi.org</a>
+						&nbsp;&nbsp;|&nbsp;&nbsp;
+						<a href="http://kanjidamage.com{{kanji.kd_link}}" target="_blank">Kanji damage</a>
+					</div>
+				</div>	
+			</div>
+			
+			<div id="left-control">
+				{% if not first %}
+					<a class="subtle-control" href="{% url 'practice' %}?level={{section.level.order}}&section={{section.order}}&kanji={{kanji_previous}}&invert=true">
+						<span style="font-size:50px">&#8249;
+					</a>
+				{% else %}
+					<a class="subtle-control" href="{% url 'section' %}?level={{section.level.order}}&section={{section.order}}">
+						<span style="font-size:50px">&#8249;
+					</a>
+				{% endif %}
+			</div>
+			
+			<div id="right-control">
+				{% if last %}
+					<a class="subtle-control" href="{% url 'section' %}?level={{section.level.order}}&section={{section.order}}">
+						<span style="font-size:50px">&#8250;
+					</a>
+				{% else %}
+					<a class="subtle-control" href="{% url 'practice' %}?level={{section.level.order}}&section={{section.order}}&kanji={{kanji_next}}&invert=true">
+						<span style="font-size:50px">&#8250;</span>
+					</a>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+</div>
+
+<span data-toggle="tooltip" data-placement="top" title="Tooltip on top">
+  Tooltip on top
+</span>
+
+{% endblock %}

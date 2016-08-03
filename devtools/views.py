@@ -242,6 +242,38 @@ def populate_level(request):
         order = 3
     )
     level.save()
+    level = models.Level(
+        name = 'Level 4',
+        label = '501-750',
+        order = 4
+    )
+    level.save()
+    level = models.Level(
+        name = 'Level 5',
+        label = '751-1000',
+        order = 5
+    )
+    level.save()
+    level = models.Level(
+        name = 'Level 6',
+        label = '1001-1250',
+        order = 6
+    )
+    level.save()
+    level = models.Level(
+        name = 'Level 7',
+        label = '1251-1500',
+        order = 7
+    )
+    level.save()
+    level = models.Level(
+        name = 'Level 8',
+        label = '1501-1765',
+        order = 8
+    )
+    level.save()
+    
+    
     results = models.Level.objects.all()
     context['results'] = results
     return render(request, 'devtools/start_action.html', context)
@@ -262,6 +294,21 @@ def populate_section(request):
     add_section(level, section_arr)
     level = models.Level.objects.get(order=3)
     section_arr = [300, 315, 330, 345, 360, 375, 390, 400, 415, 430, 445, 460, 475, 490, 500]
+    add_section(level, section_arr)
+    level = models.Level.objects.get(order=4)
+    section_arr = [500, 515, 530, 545, 560, 575, 590, 605, 620, 635, 650, 665, 680, 695, 710, 725, 740, 750]
+    add_section(level, section_arr)
+    level = models.Level.objects.get(order=5)
+    section_arr = [750, 765, 780, 795, 810, 825, 840, 855, 870, 885, 900, 915, 930, 945, 960, 975, 990, 1000]
+    add_section(level, section_arr)
+    level = models.Level.objects.get(order=6)
+    section_arr = [1000, 1015, 1030, 1045, 1060, 1075, 1090, 1105, 1120, 1135, 1150, 1165, 1180, 1195, 1210, 1225, 1240, 1250]
+    add_section(level, section_arr)
+    level = models.Level.objects.get(order=7)
+    section_arr = [1250, 1265, 1280, 1295, 1310, 1325, 1340, 1355, 1370, 1385, 1400, 1415, 1430, 1445, 1460, 1475, 1490, 1500]
+    add_section(level, section_arr)
+    level = models.Level.objects.get(order=8)
+    section_arr = [1500, 1515, 1530, 1545, 1560, 1575, 1590, 1605, 1620, 1635, 1650, 1665, 1680, 1695, 1710, 1725, 1740, 1750, 1765]
     add_section(level, section_arr)
     results = models.Section.objects.all()
     context['results'] = results

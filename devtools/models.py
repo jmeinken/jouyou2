@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.db import models
 from django.contrib import admin
 from django.contrib.auth.models import User
+from django.contrib.staticfiles.templatetags.staticfiles import static
 
 
 
@@ -24,10 +25,41 @@ class Kanji(models.Model):
     kun_yomi = models.CharField(max_length=50, null=True, blank=True)
     comment = models.CharField(max_length=1000, null=True, blank=True)
     
+    def get_big_kanji(self):
+        if self.is_image:
+            return '<img src="' + static('img/' + self.img_path) + '" alt="test" style="padding:30px 5px"  />'
+        else:
+            return '<span class="text-warning" style="font-size:80px">' + self.kanji + '</span>'
+        
+    def get_little_kanji(self):
+        if self.is_image:
+            return '<!-- kanji_id=' + str(self.id) + ' --><img src="' + static('img/' + self.img_path) + '" alt="test" height="28" width="28" /><!-- end_kanji_id -->'
+        else:
+            return self.kanji
+        
+    def get_untagged_little_kanji(self):
+        if self.is_image:
+            return '<img src="' + static('img/' + self.img_path) + '" alt="test" height="15" width="15" />'
+        else:
+            return self.kanji
+    
+    def get_getstr(self):
+        if self.is_image:
+            return 'id=' + str(self.id)
+        else:
+            return 'char=' + self.kanji
+        
+    def get_mnemonic(self, user):
+        try:
+            kanjiuser = KanjiUser.objects.get(kanji=self,user=user)
+        except:
+            return ''
+        return kanjiuser.mnemonic
+    
 class KanjiUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     kanji = models.ForeignKey(Kanji, on_delete=models.CASCADE)
-    mnemonic = models.CharField(max_length=200, null=True, blank=True)
+    mnemonic = models.CharField(max_length=500, null=True, blank=True)
     
 class Morphs(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -62,8 +94,7 @@ class Section(models.Model):
     end_kanji = models.IntegerField()
     
 class SectionUser(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    section = models.ForeignKey(Section, on_delete=models.CASCADE)
-    completed = models.BooleanField(default=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    current_section = models.IntegerField(default=0)
 
     
