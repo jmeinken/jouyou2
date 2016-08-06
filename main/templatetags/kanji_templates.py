@@ -43,8 +43,12 @@ def get_popover(kanji, user):
         pron = '&nbsp;&nbsp;&nbsp;(' + kanji.pronunciation + ')'
     else:
         pron = ''
+    example_word = kanji.get_example_word(user)
     title = kanji.get_untagged_little_kanji().replace('"',"'") + pron + ' - ' + kanji.meaning
-    content = mnemonic + "<br><a href='/kanji?" + kanji.get_getstr() + "'>[more]</a>"
+    content = ''
+    if example_word:
+        content = 'example word: ' + example_word.word + ' (' + example_word.get_pronunciation() + ')<br>'
+    content = content + mnemonic + "<br><a href='/kanji?" + kanji.get_getstr() + "'>[more]</a>"
     output = (output + '<a  class="clickable-kanji" data-container="body" data-toggle="popover" data-placement="top" data-html="true"' +
             ' data-content="' + content + '"' +
             ' title="' + title + '">')

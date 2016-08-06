@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.db.models import Min
+from django.db.models import Min, Max
 
 from devtools import models
+
+from . import functions
 
 
 
@@ -34,6 +36,7 @@ def logout_view(request):
 
 @login_required
 def home(request):
+    print models.testing
     context = {
         'levels' : models.Level.objects.all(),           
     }
@@ -100,19 +103,26 @@ def study(request):
         kanji.comment = request.POST.get('comment')
         kanji.save()
         mnemonic = request.POST.get('mnemonic')
-        if mnemonic or mnemonic == '':
-            try:
-                kanji_user = models.KanjiUser.objects.get(user=request.user, kanji=kanji)
-                kanji_user.mnemonic = mnemonic
-                print "exists"
-            except:
-                print "not exist"
-                kanji_user = models.KanjiUser(
-                    user = request.user,
-                    kanji = kanji,
-                    mnemonic = mnemonic
-                )
-            kanji_user.save()
+        example_word_ids = request.POST.getlist('example_word')
+        if example_word_ids:
+            example_word = models.Words.objects.get(id=example_word_ids[0])
+        try:
+            kanji_user = models.KanjiUser.objects.get(user=request.user, kanji=kanji)
+            kanji_user.mnemonic = mnemonic
+            print "exists"
+        except:
+            print "not exist"
+            kanji_user = models.KanjiUser(
+                user = request.user,
+                kanji = kanji,
+                mnemonic = mnemonic
+            )
+        if example_word_ids:
+            print example_word
+            kanji_user.example_word = example_word
+        else:
+            kanji_user.example_word = None
+        kanji_user.save()
     # end temporary form handler
     if not 'level' in request.GET or not 'section' in request.GET or not 'kanji' in request.GET:
         return redirect(home)
@@ -125,6 +135,8 @@ def study(request):
         return redirect(home)
     kanji = models.Kanji.objects.get(hybrid_order=hybrid_value)
     mnemonic = kanji.get_mnemonic(request.user)
+    example_word = kanji.get_example_word(request.user)
+    print example_word
     words = models.Words.objects.filter(word__contains=kanji.kanji).order_by('word_ranking')
     vocabulary = []
     for word in words:
@@ -139,6 +151,7 @@ def study(request):
                 vocab.append( (char) )
             i = i + 1
         vocabulary.append({
+            'id' : word.id,               
             'word' : vocab,
             'definition' : word.definition,
             'ranking' : word.word_ranking,
@@ -148,6 +161,7 @@ def study(request):
         'kanji' : kanji,
         'mnemonic' : mnemonic,
         'kanji_number' : kanji_number,
+        'example_word' : example_word,
         'kanji_next' : kanji_number + 1,
         'kanji_previous' : kanji_number - 1,
         'count_in_section' : section.end_kanji - section.start_kanji + 1,
@@ -157,31 +171,62 @@ def study(request):
     }
     return render(request, 'study.html', context)
 
+@login_required
 def practice(request):
     context = {}
-    if not 'level' in request.GET or not 'section' in request.GET or not 'kanji' in request.GET:
+    first = False
+    last = False
+    if not 'level' in request.GET or not 'section' in request.GET:
         return redirect(home)
     level_number = int(request.GET.get('level'))
     section_number = int(request.GET.get('section'))
-    kanji_number = int(request.GET.get('kanji'))
     section = models.Section.objects.get(order=section_number, level__order=level_number)
-    hybrid_value = section.start_kanji + kanji_number - 1
-    if hybrid_value > section.end_kanji:
-        return redirect(home)
-    kanji = models.Kanji.objects.get(hybrid_order=hybrid_value)
+    sort_order = request.session.get('sort_section_' + str(section_number))
+    if not sort_order or len(sort_order) == 0 or 'start' in request.GET:
+        request.session['sort_section_' + str(section_number)] = functions.get_random_sort(section)
+        sort_order = request.session.get('sort_section_' + str(section_number))
+        first = True
+    if len(sort_order) == 1:
+        last = True
+    kanji = models.Kanji.objects.get(id=sort_order.pop(0))
+    request.session['sort_section_' + str(section_number)] = sort_order
     mnemonic = kanji.get_mnemonic(request.user)
     context = {
         'section' : section, 
         'kanji' : kanji,
         'mnemonic' : mnemonic,
-        'kanji_number' : kanji_number,
-        'kanji_next' : kanji_number + 1,
-        'kanji_previous' : kanji_number - 1,
-        'count_in_section' : section.end_kanji - section.start_kanji + 1,
-        'first' : kanji_number == 1,
-        'last' : section.start_kanji + kanji_number - 1 == section.end_kanji,       
+        'first' : first,
+        'last' : last,       
+        'all_completed' : False,    
     }
     if request.GET.get('invert'):
+        context['invert'] = True
+        return render(request, 'writing_practice.html', context)
+    else:
+        return render(request, 'recognition_practice.html', context)
+
+@login_required   
+def practice_completed(request):
+    context = {}
+    sectionuser = models.SectionUser.objects.get(user=request.user)
+    last_section = models.Section.objects.filter(id__lt=sectionuser.current_section).order_by('-id')[0]
+    cutoff = last_section.end_kanji
+    sort_order = request.session.get('sort_completed')
+    set_cutoff = request.session.get('cutoff')
+    if not sort_order or len(sort_order) == 0 or cutoff != set_cutoff:
+        request.session['sort_completed'] = functions.get_random_sort_completed(cutoff)
+        sort_order = request.session.get('sort_completed')
+        request.session['cutoff'] = cutoff
+    kanji = models.Kanji.objects.get(id=sort_order.pop(0))
+    request.session['sort_completed'] = sort_order
+    mnemonic = kanji.get_mnemonic(request.user)
+    context = {
+        'kanji' : kanji,
+        'mnemonic' : mnemonic,    
+        'all_completed' : True,   
+    }
+    if request.GET.get('invert'):
+        context['invert'] = True
         return render(request, 'writing_practice.html', context)
     else:
         return render(request, 'recognition_practice.html', context)

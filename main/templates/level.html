@@ -10,8 +10,12 @@
 		<div class="row">
 			{% if section.id < current_section %}
 				<div class="col-sm-6 text-primary">
-					<i class="fa fa-check" aria-hidden="true"></i>
-					Section {{ section.order }}: kanji {{ section.start_kanji }} - {{ section.end_kanji }}
+					<a href="{% url 'section' %}?level={{section.level.order}}&section={{section.order}}">
+						<span class="text-primary">
+							<i class="fa fa-check" aria-hidden="true"></i>
+							Section {{ section.order }}: kanji {{ section.start_kanji }} - {{ section.end_kanji }}
+						</span>
+					</a>
 				</div>
 				<div class="col-sm-6">
 					<div class="btn-group">

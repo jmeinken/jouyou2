@@ -56,10 +56,33 @@ class Kanji(models.Model):
             return ''
         return kanjiuser.mnemonic
     
+    def get_example_word(self, user):
+        try:
+            kanjiuser = KanjiUser.objects.get(kanji=self,user=user)
+            word = kanjiuser.example_word
+        except:
+            word = None
+        return word
+    
+    def get_example_word_only(self, user):
+        try:
+            kanjiuser = KanjiUser.objects.get(kanji=self,user=user)
+            word = kanjiuser.example_word.word
+        except:
+            word = ''
+        return word
+    
+    
+@admin.register(Kanji)
+class KanjiAdmin(admin.ModelAdmin):
+    list_display = ('kanji', 'hybrid_order')
+             
+    
 class KanjiUser(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     kanji = models.ForeignKey(Kanji, on_delete=models.CASCADE)
     mnemonic = models.CharField(max_length=500, null=True, blank=True)
+    example_word = models.ForeignKey('Words', on_delete=models.CASCADE, null=True, blank=True)
     
 class Morphs(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -77,11 +100,27 @@ class Words(models.Model):
     full_pronunciation = models.CharField(max_length=50, null=True, blank=True)
     comment = models.CharField(max_length=1000, null=True, blank=True)
     
+    def get_pronunciation(self):
+        i = 1
+        pronunciation = ''
+        for char in self.word:
+            try:
+                fg = WordFurigana.objects.get(word=self, position=i)
+                pron = fg.furigana
+            except:
+                pron = char
+            pronunciation += pron
+            i = i + 1
+        return pronunciation
+                
+    
 class WordFurigana(models.Model):
     word = models.ForeignKey(Words, on_delete=models.CASCADE)
     position = models.IntegerField(null=True, blank=True)
     furigana = models.CharField(max_length=10, null=True, blank=True)
     
+testing = "hello"    
+
 class Level(models.Model):
     name = models.CharField(max_length=50)
     label = models.CharField(max_length=50)
@@ -95,6 +134,6 @@ class Section(models.Model):
     
 class SectionUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    current_section = models.IntegerField(default=0)
+    current_section = models.IntegerField(default=0)  # the section ID
 
     

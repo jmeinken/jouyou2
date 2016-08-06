@@ -112,36 +112,14 @@ a.subtle-control:hover {
 						</tr>
 					</table>
 					<div style="text-align: center;">
+						<a href="{% url 'kanji' %}?char={{kanji.kanji}}">go to kanji</a><br>
 						<a href="http://jisho.org/word/{{kanji.kanji}}" target="_blank">Joshi.org</a>
 						&nbsp;&nbsp;|&nbsp;&nbsp;
 						<a href="http://kanjidamage.com{{kanji.kd_link}}" target="_blank">Kanji damage</a>
 					</div>
 				</div>	
 			</div>
-			
-			<div id="left-control">
-				{% if not first %}
-					<a class="subtle-control" href="{% url 'practice' %}?level={{section.level.order}}&section={{section.order}}&kanji={{kanji_previous}}">
-						<span style="font-size:50px">&#8249;
-					</a>
-				{% else %}
-					<a class="subtle-control" href="{% url 'section' %}?level={{section.level.order}}&section={{section.order}}">
-						<span style="font-size:50px">&#8249;
-					</a>
-				{% endif %}
-			</div>
-			
-			<div id="right-control">
-				{% if last %}
-					<a class="subtle-control" href="{% url 'section' %}?level={{section.level.order}}&section={{section.order}}">
-						<span style="font-size:50px">&#8250;
-					</a>
-				{% else %}
-					<a class="subtle-control" href="{% url 'practice' %}?level={{section.level.order}}&section={{section.order}}&kanji={{kanji_next}}">
-						<span style="font-size:50px">&#8250;</span>
-					</a>
-				{% endif %}
-			</div>
+			{% include 'snippets/practice_navigation.html' %}
 		</div>
 	</div>
 </div>

@@ -1,0 +1,26 @@
+<div id="left-control">
+	{% if all_completed %}
+	{% else %}
+		<a class="subtle-control" href="{% url 'section' %}?level={{section.level.order}}&section={{section.order}}">
+			<span style="font-size:50px">&#8249;
+		</a>
+	{% endif %}
+</div>
+
+<div id="right-control">
+	{% if all_completed %}
+		<a class="subtle-control" href="{% url 'practice_completed' %}{% if invert %}?invert=true{% endif %}">
+			<span style="font-size:50px">&#8250;</span>
+		</a>
+	{% else %}
+		{% if last %}
+			<a class="subtle-control" href="{% url 'section' %}?level={{section.level.order}}&section={{section.order}}">
+				<span style="font-size:50px">&#8250;
+			</a>
+		{% else %}
+			<a class="subtle-control" href="{% url 'practice' %}?level={{section.level.order}}&section={{section.order}}{% if invert %}&invert=true{% endif %}">
+				<span style="font-size:50px">&#8250;</span>
+			</a>
+		{% endif %}
+	{% endif %}
+</div>
