@@ -1,15 +1,5 @@
-import sys
+import os
+from django.core.wsgi import get_wsgi_application
 
-from jouyou.devtools import models
-
-
-
-def application(environ, start_response):
-    status = '200 OK'
-    output = str(sys.path)
-
-    response_headers = [('Content-type', 'text/plain'),
-                        ('Content-Length', str(len(output)))]
-    start_response(status, response_headers)
-
-    return [output]
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "jouyou.settings_production")
+application = get_wsgi_application()

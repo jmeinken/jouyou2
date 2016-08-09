@@ -92,6 +92,12 @@ class KanjiComponent(models.Model):
     kanji = models.ForeignKey(Kanji, related_name = 'kanji_set')
     component = models.ForeignKey(Kanji, related_name = 'component_set')
     
+class WordDeleted(models.Model):
+    word = models.CharField(max_length=50)
+    max_hybrid_order = models.IntegerField(null=True, blank=True)
+    word_ranking = models.IntegerField(null=True, blank=True)
+    definition = models.CharField(max_length=200, null=True, blank=True)
+    
 class Words(models.Model):
     word = models.CharField(max_length=50)
     max_hybrid_order = models.IntegerField(null=True, blank=True)
@@ -99,6 +105,7 @@ class Words(models.Model):
     definition = models.CharField(max_length=200, null=True, blank=True)
     full_pronunciation = models.CharField(max_length=50, null=True, blank=True)
     comment = models.CharField(max_length=1000, null=True, blank=True)
+    proper_noun = models.BooleanField(default=False)
     
     def get_pronunciation(self):
         i = 1

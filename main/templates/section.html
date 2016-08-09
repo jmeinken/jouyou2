@@ -26,8 +26,7 @@
 					<a href="#" class="btn btn-primary btn-sm">vocabulary</a>
 					<a href="#" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown"><span class="caret"></span></a>
 					<ul class="dropdown-menu">
-						<li><a href="#">study</a></li>
-						<li><a href="#">reading practice</a></li>
+						<li><a href="{% url 'word_practice' %}?level={{section.level.order}}&section={{section.order}}&start=true">reading practice</a></li>
 					</ul>
 				</div>
 				Completed

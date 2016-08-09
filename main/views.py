@@ -106,6 +106,18 @@ def study(request):
         example_word_ids = request.POST.getlist('example_word')
         if example_word_ids:
             example_word = models.Words.objects.get(id=example_word_ids[0])
+        delete_word_ids = request.POST.getlist('delete_word')
+        if delete_word_ids:
+            for id in delete_word_ids:
+                word = models.Words.objects.get(pk=id)
+                wd = models.WordDeleted(
+                    word=word.word, 
+                    max_hybrid_order=word.max_hybrid_order,
+                    definition=word.definition,
+                    word_ranking=word.word_ranking
+                )
+                wd.save()
+                word.delete()
         try:
             kanji_user = models.KanjiUser.objects.get(user=request.user, kanji=kanji)
             kanji_user.mnemonic = mnemonic
@@ -140,22 +152,7 @@ def study(request):
     words = models.Words.objects.filter(word__contains=kanji.kanji).order_by('word_ranking')
     vocabulary = []
     for word in words:
-        vocab = []
-        wordfurigana = models.WordFurigana.objects.filter(word=word)
-        i = 1
-        for char in word.word:
-            fg = wordfurigana.filter(position=i)
-            if fg:
-                vocab.append( (char, fg[0].furigana) )
-            else:
-                vocab.append( (char) )
-            i = i + 1
-        vocabulary.append({
-            'id' : word.id,               
-            'word' : vocab,
-            'definition' : word.definition,
-            'ranking' : word.word_ranking,
-        })    
+        vocabulary.append(functions.rebuild_word_with_furigana(word))    
     context = {
         'section' : section,       
         'kanji' : kanji,
@@ -230,6 +227,62 @@ def practice_completed(request):
         return render(request, 'writing_practice.html', context)
     else:
         return render(request, 'recognition_practice.html', context)
+    
+@login_required   
+def word_practice(request):
+    context = {}
+    first = False
+    last = False
+    if not 'level' in request.GET or not 'section' in request.GET:
+        return redirect(home)
+    level_number = int(request.GET.get('level'))
+    section_number = int(request.GET.get('section'))
+    section = models.Section.objects.get(order=section_number, level__order=level_number)
+    sort_order = request.session.get('word_sort_section_' + str(section_number))
+    if not sort_order or len(sort_order) == 0 or 'start' in request.GET:
+        request.session['word_sort_section_' + str(section_number)] = functions.get_random_sort_vocab(section)
+        sort_order = request.session.get('word_sort_section_' + str(section_number))
+        first = True
+    if len(sort_order) == 1:
+        last = True
+    word = models.Words.objects.get(id=sort_order.pop(0))
+    word = functions.rebuild_word_with_furigana(word)
+    request.session['word_sort_section_' + str(section_number)] = sort_order
+    context = {
+        'section' : section, 
+        'word' : word,
+        'first' : first,
+        'last' : last,       
+        'all_completed' : False,    
+        'vocab_count' : functions.get_count_section_vocab(section) 
+    }
+    if request.GET.get('invert'):
+        context['invert'] = True
+        return render(request, 'writing_practice.html', context)
+    else:
+        return render(request, 'word_practice.html', context)
+
+@login_required   
+def word_practice_completed(request):
+    context = {}
+    sectionuser = models.SectionUser.objects.get(user=request.user)
+    last_section = models.Section.objects.filter(id__lt=sectionuser.current_section).order_by('-id')[0]
+    cutoff = last_section.end_kanji
+    sort_order = request.session.get('sort_completed_vocab')
+    set_cutoff = request.session.get('cutoff')
+    if not sort_order or len(sort_order) == 0 or cutoff != set_cutoff:
+        request.session['sort_completed_vocab'] = functions.get_random_sort_completed_vocab(cutoff)
+        sort_order = request.session.get('sort_completed_vocab')
+        request.session['cutoff'] = cutoff
+    word = models.Words.objects.get(id=sort_order.pop(0))
+    word = functions.rebuild_word_with_furigana(word)
+    request.session['sort_completed_vocab'] = sort_order
+    context = {
+        'word' : word,   
+        'all_completed' : True,  
+        'vocab_count' : functions.get_count_completed_vocab(cutoff) 
+    }
+    return render(request, 'word_practice_completed.html', context)
 
 @login_required
 def kanji(request):

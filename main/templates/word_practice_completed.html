@@ -68,25 +68,14 @@ a.subtle-control:hover {
 		<div class="panel panel-primary" style="position:relative">
 		    <div class="panel-heading">
 		    	<div style="float:right">
-		    		<a class="invert" href="{% url 'level' %}?level={{section.level.order}}">level {{section.level.order}}</a> 
-		    		| 
-		    		section {{section.order}}
+		    		count: {{vocab_count}}
 		    	</div>
-		    	Recognition Practice
+		    	Reading Practice
 		    </div>
 			<div class="panel-body" style="padding:5px 30px;">
 				<div class="row">
-					<div class="col-xs-6">
-						{{ kanji.get_big_kanji|safe }}
-					</div>
-					<div class="col-xs-6">
-						<div style="padding-top:30px;">
-							{% if kanji.is_kanji %}
-								Provide meaning and pronunciation
-							{% else %}
-								Provide meaning
-							{% endif %}
-						</div>
+					<div class="col-xs-12" style="font-size:40px;padding-top:30px;padding-bottom:30px;text-align:center;">
+						{{ word.word }}
 					</div>
 				</div>
 			</div>
@@ -94,32 +83,32 @@ a.subtle-control:hover {
 				<a href="#" id="show-more-info">answer<i class="fa fa-caret-down" aria-hidden="true"></i></a>
 				<div id="more-info" style="display:none;">	
 					<br>
-					{% if not kanji.is_kanji %}
-						<div class="alert alert-dismissible alert-warning">not a kanji</div>
-					{% endif %}
 					<table class="table table-striped">
 						<tr>
-							<td>pronunciation</td>
-							<td>{{kanji.pronunciation}}</td>
+							<td>word</td>
+							<td>{% include "snippets/word_with_furigana.html" %}</td>
 						</tr>
 						<tr>
-							<td>meaning</td>
-							<td>{{kanji.meaning}}</td>
+							<td>definition</td>
+							<td>{{word.definition}}</td>
 						</tr>
 						<tr>
-							<td>mnemonic</td>
-							<td>{{mnemonic}}</td>
+							<td>ranking</td>
+							<td>{{word.word_ranking}}</td>
 						</tr>
 					</table>
 					<div style="text-align: center;">
-						<a href="{% url 'kanji' %}?char={{kanji.kanji}}">go to kanji</a><br>
-						<a href="http://jisho.org/search/{{kanji.kanji}}%20%23kanji" target="_blank">Joshi.org</a>
-						&nbsp;&nbsp;|&nbsp;&nbsp;
-						<a href="http://kanjidamage.com{{kanji.kd_link}}" target="_blank">Kanji damage</a>
+						<a href="http://jisho.org/search/{{word.word}}" target="_blank">Joshi.org</a>
 					</div>
 				</div>	
 			</div>
-			{% include 'snippets/practice_navigation.html' %}
+			<div id="left-control">
+			</div>
+			<div id="right-control">
+				<a class="subtle-control" href="{% url 'word_practice_completed' %}">
+					<span style="font-size:50px">&#8250;</span>
+				</a>
+			</div>
 		</div>
 	</div>
 </div>

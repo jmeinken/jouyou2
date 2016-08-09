@@ -1,12 +1,12 @@
 {% load kanji_templates %}
 <table class="furigana-table">
 	<tr>
-		{% for char in word.word %}
+		{% for char in word.word_fg %}
 			<td>{{char.1}}</td>
 		{% endfor %}
 	</tr>
 	<tr>
-		{% for char in word.word %}
+		{% for char in word.word_fg %}
 			<th>{{char.0|tag_kanji:user|safe}}</th>
 		{% endfor %}
 	</tr>
