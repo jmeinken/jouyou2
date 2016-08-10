@@ -74,7 +74,13 @@ def preappend_dependencies(kanji_id, kanji_complete, results, depth):
             preappend_dependencies(component_kanji.id, kanji_complete, results, depth+1)
             kanji_complete.append(component_kanji.id)
 
-
+def dictfetchall(cursor):
+    "Return all rows from a cursor as a dict"
+    columns = [col[0] for col in cursor.description]
+    return [
+        dict(zip(columns, row))
+        for row in cursor.fetchall()
+    ]
 
 
 

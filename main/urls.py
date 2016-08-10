@@ -20,6 +20,7 @@ urlpatterns = [
     url(r'^word_practice_completed$', views.word_practice_completed, name='word_practice_completed'),
     url(r'^kanji$', views.kanji, name='kanji'),
     url(r'^word$', views.word, name='word'),
+    url(r'^pronunciations$', views.pronunciations, name='pronunciations'),
     url(r'^login', views.login_view, name='login'),
     url(r'^logout', views.logout_view, name='logout'),
 ]

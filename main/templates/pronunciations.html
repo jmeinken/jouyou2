@@ -1,0 +1,120 @@
+{% extends 'core/base.html' %}
+
+{% load staticfiles %}
+{% load kanji_templates %}
+
+
+
+
+{% block content %}
+
+<script>
+
+$( document ).ready(function() {
+	
+	$('#show-more-info').click(function() {
+		$('#more-info').toggle();
+		return false;
+	});
+	
+});
+
+</script>
+
+<style>
+#left-control {
+	position: absolute;
+	top: 100px;
+	left: 2px
+}
+#right-control {
+	position: absolute;
+	top: 100px;
+	right: 2px;
+}
+a.subtle-control {
+	color: #d9d9d9;
+}
+a.subtle-control:hover {
+	color: #18BC9C;
+	text-decoration: none;
+}
+#pronunciation {
+	font-size: 27px;
+	padding-top: 22px;
+}
+#meaning {
+	font-size: 20px;
+}
+#info-table td {
+	padding: 3px 8px;
+	vertical-align: middle;
+}
+#info-table th {
+	padding: 3px 8px;
+	vertical-align: middle;
+	font-weight: normal;
+}
+#info-table {
+	width: 100%;
+}
+
+</style>
+
+
+
+<div class="row">
+	<div class="col-sm-6 col-sm-offset-3">
+		<div class="panel panel-primary" style="position:relative">
+		    <div class="panel-heading">
+		    	<div style="float:right">
+		    	</div>
+		    	Pronunciation
+		    </div>
+			<div class="panel-body" style="padding:5px 30px;">
+				<div class="row">
+					<div class="col-xs-12">
+						{{ pron.pronunciation }}
+					</div>
+				</div>
+				<table id="info-table" class="table table-striped">
+					<tr>
+						<th>mnemonic</th>
+						<td>{{ pron.mnemonic|default_if_none:'' }}</td>
+					</tr>
+				</table>
+				<div style="text-align: center;">
+					<a href="http://jisho.org/search/{{kanji.kanji}}%20%23kanji" target="_blank">Joshi.org</a>
+					&nbsp;&nbsp;|&nbsp;&nbsp;
+					<a href="http://kanjidamage.com{{kanji.kd_link}}" target="_blank">Kanji damage</a>
+				</div>
+			</div>
+			<div class="panel-footer">
+				<a href="#" id="show-more-info">more<i class="fa fa-caret-down" aria-hidden="true"></i></a>
+				<div id="more-info" style="display:none;">	
+					{% for k in kanji %}
+						{{k.kanji|tag_kanji:user|safe}} ({{k.meaning}})<br>
+					{% endfor %}
+					<form action="" method="post">
+						{% csrf_token %}
+						<label for="inputEmail" class="control-label">Mnemonic</label>
+				        <input class="form-control" type="text" name="mnemonic" value="{{pron.mnemonic|default_if_none:''}}">
+				        <button type="submit" class="btn btn-primary">Submit</button>
+					</form>
+				</div>	
+			</div>
+			
+			<div id="left-control">
+			</div>
+			
+			<div id="right-control">
+			</div>
+		</div>
+	</div>
+</div>
+
+<span data-toggle="tooltip" data-placement="top" title="Tooltip on top">
+  Tooltip on top
+</span>
+
+{% endblock %}

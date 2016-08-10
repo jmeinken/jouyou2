@@ -111,6 +111,13 @@ a.subtle-control:hover {
 						<th>mnemonic</th>
 						<td>{{ mnemonic|default_if_none:'' }}</td>
 					</tr>
+					<tr>
+						<th>pronunciation mnemonic</th>
+						<td>
+							{{ pronunciation_mnemonic|default_if_none:'' }} 
+							<a href="{% url 'pronunciations' %}?pron={{kanji.pronunciation}}">[edit]</a>
+						</td>
+					</tr>
 					{% if example_word %}
 						<tr>
 							<th>example word</th>

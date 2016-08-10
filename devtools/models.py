@@ -84,6 +84,11 @@ class KanjiUser(models.Model):
     mnemonic = models.CharField(max_length=500, null=True, blank=True)
     example_word = models.ForeignKey('Words', on_delete=models.CASCADE, null=True, blank=True)
     
+class PronunciationUser(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    pronunciation = models.CharField(max_length=10)
+    mnemonic = models.CharField(max_length=500, null=True, blank=True)
+    
 class Morphs(models.Model):
     id = models.IntegerField(primary_key=True)
     kanji = models.ForeignKey(Kanji, on_delete=models.CASCADE)

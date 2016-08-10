@@ -1,0 +1,17 @@
+
+{{results|length}}
+
+<table>
+	<tr>
+		{% for key, value in results.0.items %}
+			<th>{{ key }}</th>
+		{% endfor %}
+	</tr>
+	{% for result in results %}
+		<tr>
+			{% for key, value in result.items %}
+				<td>{{value}}</td> 
+			{% endfor %}
+		</tr>
+	{% endfor %}
+</table>

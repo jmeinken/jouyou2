@@ -153,6 +153,11 @@ def study(request):
     vocabulary = []
     for word in words:
         vocabulary.append(functions.rebuild_word_with_furigana(word))    
+    try:
+        pu = models.PronunciationUser.objects.get(pronunciation=kanji.pronunciation, user=request.user)
+        pronunciation_mnemonic = pu.mnemonic
+    except:
+        pronunciation_mnemonic = ''
     context = {
         'section' : section,       
         'kanji' : kanji,
@@ -164,7 +169,8 @@ def study(request):
         'count_in_section' : section.end_kanji - section.start_kanji + 1,
         'first' : kanji_number == 1,
         'last' : section.start_kanji + kanji_number - 1 == section.end_kanji,
-        'vocab' : vocabulary
+        'vocab' : vocabulary,
+        'pronunciation_mnemonic' : pronunciation_mnemonic
     }
     return render(request, 'study.html', context)
 
@@ -327,3 +333,27 @@ def word(request):
     }
     return render(request, 'word.html', context)
 
+@login_required
+def pronunciations(request):
+    context = {}
+    if not 'pron' in request.GET:
+        return redirect(home)
+    pron = request.GET['pron']
+    try:
+        p = models.PronunciationUser.objects.get(pronunciation=pron)
+    except:
+        p = models.PronunciationUser(
+            user=request.user,
+            pronunciation=pron                     
+        )
+        p.save()
+    if request.method == "POST":
+        p.mnemonic = request.POST.get('mnemonic')
+        p.save()
+    kanji = models.Kanji.objects.filter(pronunciation=pron).order_by('hybrid_order')
+    context = {
+        'pron' : p,
+        'kanji' : kanji,
+    }
+    return render(request, 'pronunciations.html', context)
+    

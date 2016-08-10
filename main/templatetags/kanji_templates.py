@@ -13,6 +13,7 @@ register = template.Library()
 
 def tag_kanji(value, user):
     """Create popovers for all kanji in provided string"""
+    # {{mystr|tag_kanji:user|safe}}
     output = ""
     for char in value:
         try:
@@ -32,7 +33,16 @@ def tag_kanji(value, user):
 
 register.filter('tag_kanji', tag_kanji)
 
+def tag_pronunciation(value, user):
+    """Create popovers for a pronunciation"""
+    try:
+        p = models.PronunciationUser.objects.get(pronunciation=value)
+    except:
+        return value + ' <a href="/pronunciations?pron=' + value + '">[mnemonic]</a>'
+    output = value + ' <a href="/pronunciations?pron=' + value + '">[mnemonic]</a>'
+    return output
 
+register.filter('tag_pronunciation', tag_pronunciation)
 
    
 

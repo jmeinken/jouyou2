@@ -9,7 +9,7 @@ from django.db import connection
 
 
 from . import models
-from .functions import check_components, scrape_jisho
+from .functions import check_components, scrape_jisho, dictfetchall
 
 # Create your views here.
 
@@ -124,6 +124,30 @@ def  import_kanji_component_data(request):
             kanji = models.Kanji.objects.get(pk=spl[0]),
             component = models.Kanji.objects.get(pk=spl[2]),
         )
+        m.save()
+        results.append(spl[0])
+    context = {
+        'results' : results,       
+    }
+    return render(request, 'devtools/start_action.html', context)
+
+def import_pronunciation_mnemonic_data(request):
+    context = {
+        'action' : 'import data from pronunciation_menmonic.txt',
+    }
+    if request.method != "POST":
+        return render(request, 'devtools/start_action.html', context)
+    context = {}
+    file = open('/home/ubuntu/django/jouyou-env/jouyou/devtools/data/pronunciation_mnemonic.txt', 'r')
+    results = []
+    for line in file:
+        spl = line.rstrip('\n').split('\t')
+        m = models.PronunciationUser(
+            user = request.user,
+            pronunciation = spl[0],
+        )
+        if len(spl) > 1:
+            m.mnemonic = spl[1]
         m.save()
         results.append(spl[0])
     context = {
@@ -314,6 +338,29 @@ def populate_section(request):
     context['results'] = results
     
     return render(request, 'devtools/start_action.html', context)
+
+def query(request):
+    context = {}
+    cursor = connection.cursor()
+    cursor.execute('''
+        SELECT trim(pronunciation, X'090d0a20') as `pron`, count(id)
+        FROM devtools_kanji
+        GROUP BY trim(pronunciation, X'090d0a20');
+    ''')
+    results = dictfetchall(cursor)
+    for result in results:
+        cursor.execute('''
+            SELECT kanji, meaning, most_used_order
+            FROM devtools_kanji
+            WHERE trim(pronunciation, X'090d0a20') = %s
+            ORDER BY hybrid_order;
+        ''', [result['pron']])
+        kanji = dictfetchall(cursor)
+        result['kanji'] = ''
+        for k in kanji:
+            result['kanji'] = result['kanji'] + k['kanji'] + '(' + k['meaning'] +  ') ' + str(k['most_used_order']) + ', '
+    context['results'] = results
+    return render(request, 'devtools/query.html', context)
 
 def add_section(level, section_arr):
     i = 0
