@@ -39,7 +39,7 @@
 					</div>
 					Completed
 				</div>
-			{% elif section.id = current_section %}
+			{% elif section.id == current_section %}
 				<div class="col-sm-6 text-success">
 					<i class="fa fa-bullseye" aria-hidden="true"></i>
 					Section {{ section.order }}: kanji {{ section.start_kanji }} - {{ section.end_kanji }}

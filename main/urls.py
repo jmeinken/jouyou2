@@ -1,4 +1,4 @@
-from django.conf.urls import url, include
+from django.urls import path, include
 from django.contrib import admin
 from . import views
 
@@ -10,17 +10,18 @@ from . import views
 
 
 urlpatterns = [
-    url(r'^$', views.home, name='home'),
-    url(r'^practice_completed$', views.practice_completed, name='practice_completed'),
-    url(r'^level$', views.level, name='level'),
-    url(r'^section$', views.section, name='section'),
-    url(r'^study$', views.study, name='study'),
-    url(r'^practice$', views.practice, name='practice'),
-    url(r'^word_practice$', views.word_practice, name='word_practice'),
-    url(r'^word_practice_completed$', views.word_practice_completed, name='word_practice_completed'),
-    url(r'^kanji$', views.kanji, name='kanji'),
-    url(r'^word$', views.word, name='word'),
-    url(r'^pronunciations$', views.pronunciations, name='pronunciations'),
-    url(r'^login', views.login_view, name='login'),
-    url(r'^logout', views.logout_view, name='logout'),
+    
+    path('practice_completed', views.practice_completed, name='practice_completed'),
+    path('level', views.level, name='level'),
+    path('section', views.section, name='section'),
+    path('study', views.study, name='study'),
+    path('practice', views.practice, name='practice'),
+    path('word_practice', views.word_practice, name='word_practice'),
+    path('word_practice_completed', views.word_practice_completed, name='word_practice_completed'),
+    path('kanji', views.kanji, name='kanji'),
+    path('word', views.word, name='word'),
+    path('pronunciations', views.pronunciations, name='pronunciations'),
+    path('login', views.login_view, name='login'),
+    path('logout', views.logout_view, name='logout'),
+    path('', views.home, name='home'),
 ]

@@ -25,6 +25,9 @@ class Kanji(models.Model):
     kun_yomi = models.CharField(max_length=50, null=True, blank=True)
     comment = models.CharField(max_length=1000, null=True, blank=True)
     
+    def __str__(self):
+        return self.kanji
+    
     def get_big_kanji(self):
         if self.is_image:
             return '<img src="' + static('img/' + self.img_path) + '" alt="test" style="padding:30px 5px"  />'
@@ -75,7 +78,7 @@ class Kanji(models.Model):
     
 @admin.register(Kanji)
 class KanjiAdmin(admin.ModelAdmin):
-    list_display = ('kanji', 'hybrid_order')
+    list_display = ('kanji', 'hybrid_order', 'is_image', 'is_kanji')
              
     
 class KanjiUser(models.Model):
@@ -92,16 +95,28 @@ class PronunciationUser(models.Model):
 class Morphs(models.Model):
     id = models.IntegerField(primary_key=True)
     kanji = models.ForeignKey(Kanji, on_delete=models.CASCADE)
+     
+@admin.register(Morphs)
+class MorphsAdmin(admin.ModelAdmin):
+    list_display = ('kanji', )
     
 class KanjiComponent(models.Model):
-    kanji = models.ForeignKey(Kanji, related_name = 'kanji_set')
-    component = models.ForeignKey(Kanji, related_name = 'component_set')
+    kanji = models.ForeignKey(Kanji, on_delete=models.CASCADE, related_name = 'kanji_set')
+    component = models.ForeignKey(Kanji, on_delete=models.CASCADE, related_name = 'component_set')
+    
+@admin.register(KanjiComponent)
+class KanjiComponentAdmin(admin.ModelAdmin):
+    list_display = ('kanji', 'component')
     
 class WordDeleted(models.Model):
     word = models.CharField(max_length=50)
     max_hybrid_order = models.IntegerField(null=True, blank=True)
     word_ranking = models.IntegerField(null=True, blank=True)
     definition = models.CharField(max_length=200, null=True, blank=True)
+    
+@admin.register(WordDeleted)
+class WordDeletedAdmin(admin.ModelAdmin):
+    list_display = ('word', 'definition')
     
 class Words(models.Model):
     word = models.CharField(max_length=50)
@@ -124,6 +139,10 @@ class Words(models.Model):
             pronunciation += pron
             i = i + 1
         return pronunciation
+    
+@admin.register(Words)
+class WordsAdmin(admin.ModelAdmin):
+    list_display = ('word', 'word_ranking')
                 
     
 class WordFurigana(models.Model):

@@ -170,6 +170,34 @@ a.subtle-control:hover {
 									{% endif %}
 								{% endfor %}	
 							</table>
+							kanji you didn't learn yet:
+							<table class="table">
+								<tr>
+									<th></th>
+									<th>Word</th>
+									<th>Rank</th>
+									<th>Definition</th>
+									<th>Del?</th>
+								</tr>
+								{% for word in vocab %}
+									{% if word.max_hybrid_order > kanji.hybrid_order %}
+										<tr>
+											<td>
+												<input type="checkbox" name="example_word" value={{word.id}}
+												    {% if word.id == example_word.id %}checked{% endif %} />
+											</td>
+											<td>
+												{% include "snippets/word_with_furigana.html" %}
+											</td>
+											<td>{{word.ranking}}</td>
+											<td>{{word.definition}}</td>
+											<td>
+												<input type="checkbox" name="delete_word" value={{word.id}} />
+											</td>
+										</tr>
+									{% endif %}
+								{% endfor %}	
+							</table>
 						{% endif %}
 						{% csrf_token %}
 						<input type="hidden" name="kanji_id" value="{{kanji.id}}" />

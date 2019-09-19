@@ -36,7 +36,7 @@ def logout_view(request):
 
 @login_required
 def home(request):
-    print models.testing
+    print(models.testing)
     context = {
         'levels' : models.Level.objects.all(),           
     }
@@ -121,16 +121,16 @@ def study(request):
         try:
             kanji_user = models.KanjiUser.objects.get(user=request.user, kanji=kanji)
             kanji_user.mnemonic = mnemonic
-            print "exists"
+            print("exists")
         except:
-            print "not exist"
+            print("not exist")
             kanji_user = models.KanjiUser(
                 user = request.user,
                 kanji = kanji,
                 mnemonic = mnemonic
             )
         if example_word_ids:
-            print example_word
+            print(example_word)
             kanji_user.example_word = example_word
         else:
             kanji_user.example_word = None
@@ -148,7 +148,7 @@ def study(request):
     kanji = models.Kanji.objects.get(hybrid_order=hybrid_value)
     mnemonic = kanji.get_mnemonic(request.user)
     example_word = kanji.get_example_word(request.user)
-    print example_word
+    print(example_word)
     words = models.Words.objects.filter(word__contains=kanji.kanji).order_by('word_ranking')
     vocabulary = []
     for word in words:
