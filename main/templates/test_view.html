@@ -1,0 +1,16 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+
+{% for oKanji in qKanji %}
+	{{ oKanji.get_untagged_little_kanji|safe }}
+	|
+	{% for oComponent in oKanji.component_set.all %}
+		{{ oComponent.kanji.get_untagged_little_kanji|safe }}
+	{% endfor %}
+	<hr>
+{% endfor %}
+
+
+
+{% endblock %}

@@ -11,6 +11,8 @@ from . import views
 
 urlpatterns = [
     
+    path('test_view', views.test_view, name='test_view'),
+    
     path('practice_completed', views.practice_completed, name='practice_completed'),
     path('level', views.level, name='level'),
     path('section', views.section, name='section'),

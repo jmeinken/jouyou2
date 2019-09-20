@@ -43,6 +43,14 @@ def home(request):
     return render(request, 'home.html', context)
 
 @login_required
+def test_view(request):
+    qKanji = models.Kanji.objects.all()
+    context = {
+        'qKanji' : qKanji,           
+    }
+    return render(request, 'test_view.html', context)
+
+@login_required
 def level(request):
     context = {}
     if request.method == "POST":
