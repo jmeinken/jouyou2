@@ -68,7 +68,7 @@ def kanjidic_generator():
                 entry['popularity'] = elem.text
             if elem.tag == 'jlpt':
                 entry['jlpt_level'] = elem.text
-            if elem.tag == 'meaning':
+            if elem.tag == 'meaning' and not 'm_lang' in elem.attrib:
                 entry['meanings'].append(elem.text)
             if elem.tag == 'reading' and elem.attrib['r_type'] == 'ja_on':
                 on_yomis = elem.text.split('.')

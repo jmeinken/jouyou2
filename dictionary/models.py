@@ -2,10 +2,10 @@ from django.db import models
 
 
 class LearnableConcept(models.Model):
-    TYPE_CHAR = 'character'
+    TYPE_KANJI = 'kanji'
     TYPE_WORD = 'word'
     TYPE_CHOICES = (
-        (TYPE_CHAR, TYPE_CHAR),
+        (TYPE_KANJI, TYPE_KANJI),
         (TYPE_WORD, TYPE_WORD),
     )
     type = models.CharField(max_length=12, choices=TYPE_CHOICES)

@@ -86,7 +86,7 @@ class Command(BaseCommand):
             # some advanced kanji aren't able to be read for some reason
             if entry['kanji'] == '\u25A0':
                 continue
-            oConcept = models.LearnableConcept(type=models.LearnableConcept.TYPE_CHAR)
+            oConcept = models.LearnableConcept(type=models.LearnableConcept.TYPE_KANJI)
             oConcept.save()
             oKanji = models.Kanji(
                 concept=oConcept,
