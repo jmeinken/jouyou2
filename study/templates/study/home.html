@@ -24,15 +24,42 @@ $(document).ready(function() {
 
 </script>
 
+<div class="row">
+	<div class="col-sm-6">
+		<h1>Study Kanji</h1>
+	</div>
+	<div class="col-sm-6 text-right h1">
+		Completed Kanji: 
+		
+		<span class="badge {% if completed_count == 0 %}badge-danger{% else %}badge-success{% endif %}">
+			{{ completed_count }}
+		</span>
+	</div>
+</div>
 
-<h1>
-	Study Kanji
-</h1>
 
-<button class="lookup-concept-detailed" 
-		data-url="{% url 'study:lookup_concept_detailed' oConceptNextKanji.id %}">
-	click me for details
-</button>
+<table class="table table-bordered table-striped table-sm">
+	<thead>
+		<th style="width:200px;">Kanji</th>
+		<th>Level</th>
+		<th>Started</th>
+	</thead>
+	<tbody>
+		{% for oCU in qConceptUserKanji %}
+			<tr {% if oCU.level == 10 %}class="table-success"{% endif %}>
+				<td style="text-align:center;font-size:1.6em;">
+					<strong>{{ oCU.concept.kanji.character }}</strong>
+				</td>
+				<td style="vertical-align: middle;">
+					&nbsp;&nbsp;{{ oCU.get_level_pretty|safe }}
+				</td>
+				<td style="vertical-align: middle;">
+					{{ oCU.created }}
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
 
 
 

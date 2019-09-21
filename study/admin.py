@@ -1,3 +1,11 @@
 from django.contrib import admin
 
-# Register your models here.
+from . import models
+
+
+
+class ConceptUserAdmin(admin.ModelAdmin):
+    list_display = ('user', 
+            'concept', 'level', 'created',)
+    
+admin.site.register(models.ConceptUser, ConceptUserAdmin)

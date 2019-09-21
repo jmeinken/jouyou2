@@ -5,14 +5,21 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from dictionary.models import LearnableConcept
+from . import models
 
 @login_required
 def home(request):
     
-    oConceptNextKanji = LearnableConcept.objects.filter(
-        type=LearnableConcept.TYPE_KANJI,
-        conceptuser__isnull=True
-    ).order_by('kanji__grade', 'kanji__popularity').first()
+    qConceptUserKanji = models.ConceptUser.objects.filter(
+        user=request.user,
+        concept__type=LearnableConcept.TYPE_KANJI
+    ).order_by('-created')
+    
+    completed_count = models.ConceptUser.objects.filter(
+        user=request.user,
+        concept__type=LearnableConcept.TYPE_KANJI,
+        level=10
+    ).count()
     
     
     # count kanji studying, kanji completed, words studying, words completed
@@ -20,16 +27,32 @@ def home(request):
     
     #get list of encountered words
     context = {
-        'oConceptNextKanji' : oConceptNextKanji,
         'current_page' : 'home',
+        'qConceptUserKanji' : qConceptUserKanji,
+        'completed_count' : completed_count,
     }
     return render(request, 'study/home.html', context)
 
 @login_required
 def learn_new_kanji(request):
     # if too many in progress, return error message
+    if request.method == 'POST':
+        concept_id = request.POST.get('concept_id')
+        oConcept = get_object_or_404(LearnableConcept, pk=concept_id)
+        oCU, created = models.ConceptUser.objects.get_or_create(
+            concept=oConcept,
+            user=request.user
+        )
+        return redirect( request.POST.get('destination', 'study:home') )
+    
+    
+    oConceptNextKanji = LearnableConcept.objects.filter(
+        type=LearnableConcept.TYPE_KANJI,
+        conceptuser__isnull=True
+    ).order_by('kanji__grade', 'kanji__popularity').first()
     context = {
         'current_page' : 'learn_new_kanji',
+        'oKanji' : oConceptNextKanji.kanji,
     }
     return render(request, 'study/learn_new_kanji.html', context)
 

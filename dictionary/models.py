@@ -38,6 +38,9 @@ class Kanji(models.Model):
     comment             = models.CharField(max_length=1000, null=True, blank=True)
     radicals            = models.ManyToManyField("Radical", blank=True)
     
+    class Meta:
+        ordering = ['popularity']
+    
     def __str__(self):
         return self.character
 
@@ -74,6 +77,9 @@ class Word(models.Model):
     pronunciation_array     = models.TextField(default='[]')
     is_proper_noun          = models.BooleanField(default=False)
     popularity              = models.IntegerField(null=True, blank=True)
+    
+    class Meta:
+        ordering = ['popularity']
     
     def kanji_set_string(self):
         # mostly used for verifying word associations are OK
