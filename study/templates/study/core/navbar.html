@@ -21,13 +21,13 @@
 
 	    <li class="nav-item {% if current_page == 'home' %}active{% endif %}">
 	    	<a class="nav-link" href="{% url 'study:home' %}">
-	        	  My Kanji
+	        	  My Kanji <span class="badge badge-success">{{ user.count_completed_kanji }}</span>
 	        	  {% if current_page == 'home' %}<span class="sr-only">(current)</span>{% endif %}
 	          </a>
 	    </li>
 	    <li class="nav-item {% if current_page == 'word_list' %}active{% endif %}">
 	    	<a class="nav-link" href="{% url 'study:word_list' %}">
-	        	  My Words
+	        	  My Words <span class="badge badge-success">{{ user.count_completed_words }}</span>
 	        	  {% if current_page == 'word_list' %}<span class="sr-only">(current)</span>{% endif %}
 	          </a>
 	    </li>

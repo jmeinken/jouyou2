@@ -15,6 +15,8 @@ class LearnableConcept(models.Model):
             return str(self.kanji)
         else:
             return str(self.word)
+        
+
     
     
 

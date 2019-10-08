@@ -4,31 +4,48 @@
 
 <script>
 
+var playAnimation = function(callback, elem) {
+	var timeleft = 3;
+	$('#progress-div').html('<span class="display-1">' + timeleft + '</span>');
+	var downloadTimer = setInterval(function(){
+		timeleft--;
+		if (timeleft <= 0) {
+			clearInterval(downloadTimer);
+			callback(elem);
+		} else {
+			$('#progress-div').html('<span class="display-1">' + timeleft + '</span>');
+		}
+	}, 1000);
+}
+
 $(document).ready(function() {
 	
 	$('.quiz-answer-option').click(function() {
-		
-		// highligh correct answer
-		var val = $(this).attr('data-value');
-		$(this).removeClass('btn-secondary');
-		if (val == '0') {
-			var correct = false;
-			$(this).addClass('btn-danger');
-		} else {
-			var correct = true;
-			$(this).addClass('btn-success');
+		var timeleft = 3;
+		var elem = $(this);
+		var callback = function(elem) {
+			// highligh correct answer
+			var val = elem.attr('data-value');
+			elem.removeClass('btn-secondary');
+			if (val == '0') {
+				var correct = false;
+				elem.addClass('btn-danger');
+			} else {
+				var correct = true;
+				elem.addClass('btn-success');
+			}
+			// update progress for this concept
+			var url = "{% url 'study:quiz_submit_answer' %}";
+			var data = {
+				concept_user_id : {{ oConceptUser.id }},
+				correct : correct
+			};
+			$.getJSON( url, data, function( json ) {
+				$('#correct-answer-div').show();
+				$('#progress-div').html(json.html_second);
+			});
 		}
-		
-		
-		// update progress for this concept
-		var url = "{% url 'study:quiz_submit_answer' %}";
-		var data = {
-			concept_user_id : {{ oConceptUser.id }},
-			correct : correct
-		};
-		$.getJSON( url, data, function( json ) {
-			$('#answer-div').html(json.html);
-		});
+		playAnimation(callback, elem);
 		
 		// don't allow multiple submits
 		$('.quiz-answer-option').unbind();
@@ -40,19 +57,41 @@ $(document).ready(function() {
 </script>
 
 
-<h1>ieee</h1>
+<div class="row">
+	<div class="col-md-6">
+		<h1>Practice Unfinished Kanji</h1>
+		<hr>
+		<div class="display-1">{{question}}</div>
+		<hr>
+		{% for answer in answers %}
+			<button type="button" class="btn btn-secondary quiz-answer-option btn-lg" data-value="{{ answer.1 }}">
+				{{ answer.0 }}
+			</button>
+		{% endfor %}
+	</div>
+	<div class="col-md-6">
+		<div id="correct-answer-div" style="display:none;">
+			<div style="text-align:right;">
+				<a href="{% url 'study:practice_kanji_in_progress' %}" class="btn btn-primary">
+					Next Question
+					<i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
+				</a>
+			</div>
+			{{ correct_answer }}
+		</div>
+		
+		<div id="progress-div"></div>	
+	</div>
+</div>
+		
 
-{{question}}
-<hr>
-{% for answer in answers %}
-
-<button type="button" class="btn btn-secondary quiz-answer-option" data-value="{{ answer.1 }}">
-	{{ answer.0 }}
-</button>
 
 
-{% endfor %}
-<div id="answer-div"></div>
+		<div id="correct-answer-div" style="display:none;">
+			{{ correct_answer }}
+		</div>
+		
+		<div id="progress-div"></div>
 
 
 

@@ -1,6 +1,8 @@
 
 import random
 
+from django.template.loader import render_to_string
+
 from . import models
 from dictionary.models import LearnableConcept, Kanji
 
@@ -28,5 +30,6 @@ def build_a_quiz(oCU):
     for oKanji in qKanji:
         answers.append( [getattr(oKanji, quiz_type), 0] )
     random.shuffle(answers)
-    return (question, answers)
+    correct_answer_string = render_to_string('study/snippets/kanji_quick_details.html', {'oKanji' : oCU.concept.kanji})
+    return (question, answers, correct_answer_string)
     

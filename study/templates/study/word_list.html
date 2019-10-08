@@ -2,6 +2,21 @@
 
 {% block content %}
 
+<script>
+$(document).ready(function() {
+	
+	$('.lookup-concept-detailed').click(function() {
+		var url = $(this).attr('data-url');
+		$.getJSON( url, function( json ) {
+			$('#concept-details-body').html(json.html);
+			$('#concept-details-modal').modal('show');
+		});
+	});
+	
+
+	
+});
+</script>
 
 
 <div class="row">
@@ -41,6 +56,24 @@
 		{% endfor %}
 	</tbody>
 </table>
+
+<div class="modal" id="concept-details-modal">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+		
+			<!-- Modal Header -->
+			<div class="modal-header">
+			  	<h4 class="modal-title">Modal Heading</h4>
+			  	<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			
+			<!-- Modal body -->
+			<div class="modal-body" id="concept-details-body">
+			</div>
+		
+		</div>
+	</div>
+</div>
 
 {% endblock %}
 

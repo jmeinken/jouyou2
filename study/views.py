@@ -84,7 +84,7 @@ def practice_kanji_in_progress(request):
     
     # choose a kanji
     oConceptUser = quiz.choose_a_concept(request.user)
-    question, answers = quiz.build_a_quiz(oConceptUser)
+    question, answers, correct_answer = quiz.build_a_quiz(oConceptUser)
         
 
      
@@ -92,6 +92,7 @@ def practice_kanji_in_progress(request):
         'current_page' : 'practice_kanji_in_progress',
         'question' : question,
         'answers' : answers,
+        'correct_answer' : correct_answer,
         'oConceptUser' : oConceptUser,
     }
     return render(request, 'study/practice_kanji_in_progress.html', context)

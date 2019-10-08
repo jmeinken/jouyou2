@@ -4,6 +4,11 @@ from dictionary.models import LearnableConcept
 # from user_manager.models import User
 
 
+def get_concept_user_for_concept(oConcept, oUser):
+    oConceptUser = ConceptUser.objects.filter(concept=oConcept, user=oUser).first()
+    return oConceptUser
+
+
 class ConceptUser(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
@@ -17,7 +22,7 @@ class ConceptUser(models.Model):
         elif self.level < 10:
             color='text-warning'
         else:
-            color='text-light'
+            color='text-success'
         response = []
         for i in range(10):
             if self.level == 10:
@@ -27,6 +32,33 @@ class ConceptUser(models.Model):
             else:
                 response.append('<i class="fa fa-circle-thin {}" aria-hidden="true"></i>'.format(color))
         return ' '.join(response)
+    
+    def attempt_to_unlock_related_words(self):
+        if not self.level == 10:
+            return
+        oUser = self.user
+        # concept must be a kanji or this doesn't make sense
+        if not self.concept.type == 'kanji':
+            return
+        # get all words that contain this kanji and have not already been unlocked
+        qWord = self.concept.kanji.word_set.all()
+        qWord = qWord.exclude(concept__conceptuser__user=oUser)
+        # for each word, check if all kanji are completed
+        words = []
+        for oWord in qWord:
+            print(oWord)
+            if get_concept_user_for_concept(oWord.concept, oUser):
+                continue
+            word_complete = True
+            for oKanji in oWord.kanji_set.all():
+                oCU = get_concept_user_for_concept(oKanji.concept, oUser)
+                if not oCU or oCU.level < 10:
+                    word_complete = False
+            if word_complete:
+                oConceptUser = ConceptUser(concept=oWord.concept, user=oUser)
+                oConceptUser.save()
+                words.append(oConceptUser.concept.word)
+        return words
                 
             
         

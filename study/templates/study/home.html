@@ -52,7 +52,7 @@ $(document).ready(function() {
 	</thead>
 	<tbody>
 		{% for oCU in qConceptUserKanji %}
-			<tr class="lookup-concept-detailed {% if oCU.level == 10 %}table-success{% endif %}"
+			<tr class="lookup-concept-detailed"
 					data-url={% url 'study:lookup_concept_detailed' oCU.concept.id %}>
 				<td style="text-align:center;font-size:1.6em;">
 					<strong>{{ oCU.concept.kanji.character }}</strong>
