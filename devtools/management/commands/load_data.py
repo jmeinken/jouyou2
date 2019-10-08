@@ -16,8 +16,9 @@ class Command(BaseCommand):
         
         self.clear_database()
         self.load_kanji()
-        self.load_radicals()
+        
         self.load_radical_associations()   
+        self.load_radical_meanings()
         self.associate_radicals_with_identical_kanji() 
 
         self.load_words()
@@ -50,14 +51,7 @@ class Command(BaseCommand):
                 if oKanji:
                     oWord.kanji_set.add(oKanji)
 
-    def load_radicals(self):
-        entries = loaders.get_radical_meanings()
-        for entry in entries:
-            oRad, created = models.Radical.objects.get_or_create(character=entry['radical'])
-            if created:
-                oRad.stroke_count = entry['stroke_count']
-                oRad.meaning = entry['meaning']
-            oRad.save()
+    
             
         
     def load_radical_associations(self):
@@ -68,6 +62,15 @@ class Command(BaseCommand):
                 for radical in entry['radicals']:
                     oRad, created = models.Radical.objects.get_or_create(character=radical)
                     oKanji.radicals.add(oRad)
+                    
+    def load_radical_meanings(self):
+        entries = loaders.get_radical_meanings()
+        for entry in entries:
+            oRad = models.Radical.objects.filter(character=entry['radical']).first()
+            if oRad:
+                oRad.stroke_count = entry['stroke_count']
+                oRad.meaning = entry['meaning']
+                oRad.save()
 
         
     def clear_database(self):

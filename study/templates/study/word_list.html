@@ -1,0 +1,47 @@
+{% extends 'study/core/base.html' %}
+
+{% block content %}
+
+
+
+<div class="row">
+	<div class="col-sm-6">
+		<h1>My Words</h1>
+	</div>
+	<div class="col-sm-6 text-right h1">
+		Completed Words: 
+		
+		<span class="badge {% if completed_count == 0 %}badge-danger{% else %}badge-success{% endif %}">
+			{{ completed_count }}
+		</span>
+	</div>
+</div>
+
+
+<table class="table table-bordered table-striped table-sm">
+	<thead>
+		<th style="min-width:200px;">Word</th>
+		<th>Level</th>
+		<th>Started</th>
+	</thead>
+	<tbody>
+		{% for oCU in qConceptUserWord %}
+			<tr class="lookup-concept-detailed {% if oCU.level == 10 %}table-success{% endif %}"
+					data-url={% url 'study:lookup_concept_detailed' oCU.concept.id %}>
+				<td style="text-align:center;font-size:1.6em;">
+					<strong>{{ oCU.concept.word.word }}</strong>
+				</td>
+				<td style="vertical-align: middle;">
+					&nbsp;&nbsp;{{ oCU.get_level_pretty|safe }}
+				</td>
+				<td style="vertical-align: middle;">
+					{{ oCU.created }}
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+{% endblock %}
+
+

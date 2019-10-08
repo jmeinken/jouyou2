@@ -6,6 +6,7 @@ from django.contrib import messages
 
 from dictionary.models import LearnableConcept
 from . import models
+from . import quiz
 
 @login_required
 def home(request):
@@ -34,6 +35,27 @@ def home(request):
     return render(request, 'study/home.html', context)
 
 @login_required
+def word_list(request):
+    
+    qConceptUserWord = models.ConceptUser.objects.filter(
+        user=request.user,
+        concept__type=LearnableConcept.TYPE_WORD
+    ).order_by('-created')
+    
+    completed_count = models.ConceptUser.objects.filter(
+        user=request.user,
+        concept__type=LearnableConcept.TYPE_WORD,
+        level=10
+    ).count()
+    
+    context = {
+        'current_page' : 'word_list',
+        'qConceptUserWord' : qConceptUserWord,
+        'completed_count' : completed_count,
+    }
+    return render(request, 'study/word_list.html', context)
+
+@login_required
 def learn_new_kanji(request):
     # if too many in progress, return error message
     if request.method == 'POST':
@@ -59,8 +81,18 @@ def learn_new_kanji(request):
 @login_required
 def practice_kanji_in_progress(request):
     # if too few in progress, return error message
+    
+    # choose a kanji
+    oConceptUser = quiz.choose_a_concept(request.user)
+    question, answers = quiz.build_a_quiz(oConceptUser)
+        
+
+     
     context = {
         'current_page' : 'practice_kanji_in_progress',
+        'question' : question,
+        'answers' : answers,
+        'oConceptUser' : oConceptUser,
     }
     return render(request, 'study/practice_kanji_in_progress.html', context)
 

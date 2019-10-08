@@ -2,8 +2,59 @@
 
 {% block content %}
 
+<script>
+
+$(document).ready(function() {
+	
+	$('.quiz-answer-option').click(function() {
+		
+		// highligh correct answer
+		var val = $(this).attr('data-value');
+		$(this).removeClass('btn-secondary');
+		if (val == '0') {
+			var correct = false;
+			$(this).addClass('btn-danger');
+		} else {
+			var correct = true;
+			$(this).addClass('btn-success');
+		}
+		
+		
+		// update progress for this concept
+		var url = "{% url 'study:quiz_submit_answer' %}";
+		var data = {
+			concept_user_id : {{ oConceptUser.id }},
+			correct : correct
+		};
+		$.getJSON( url, data, function( json ) {
+			$('#answer-div').html(json.html);
+		});
+		
+		// don't allow multiple submits
+		$('.quiz-answer-option').unbind();
+		
+	});
+	
+});	
+	
+</script>
+
 
 <h1>ieee</h1>
+
+{{question}}
+<hr>
+{% for answer in answers %}
+
+<button type="button" class="btn btn-secondary quiz-answer-option" data-value="{{ answer.1 }}">
+	{{ answer.0 }}
+</button>
+
+
+{% endfor %}
+<div id="answer-div"></div>
+
+
 
 {% endblock %}
 

@@ -3,6 +3,12 @@
 {% block content %}
 
 
+<style>
+.lookup-concept-detailed {
+	cursor:pointer;
+}
+</style>
+
 <script type="text/javascript">
 
 
@@ -26,7 +32,7 @@ $(document).ready(function() {
 
 <div class="row">
 	<div class="col-sm-6">
-		<h1>Study Kanji</h1>
+		<h1>My Kanji</h1>
 	</div>
 	<div class="col-sm-6 text-right h1">
 		Completed Kanji: 
@@ -46,7 +52,8 @@ $(document).ready(function() {
 	</thead>
 	<tbody>
 		{% for oCU in qConceptUserKanji %}
-			<tr {% if oCU.level == 10 %}class="table-success"{% endif %}>
+			<tr class="lookup-concept-detailed {% if oCU.level == 10 %}table-success{% endif %}"
+					data-url={% url 'study:lookup_concept_detailed' oCU.concept.id %}>
 				<td style="text-align:center;font-size:1.6em;">
 					<strong>{{ oCU.concept.kanji.character }}</strong>
 				</td>

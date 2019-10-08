@@ -21,28 +21,40 @@
 
 	    <li class="nav-item {% if current_page == 'home' %}active{% endif %}">
 	    	<a class="nav-link" href="{% url 'study:home' %}">
-	        	  My List
+	        	  My Kanji
 	        	  {% if current_page == 'home' %}<span class="sr-only">(current)</span>{% endif %}
 	          </a>
 	    </li>
-	    <li class="nav-item {% if current_page == 'learn_new_kanji' %}active{% endif %}">
-	    	<a class="nav-link" href="{% url 'study:learn_new_kanji' %}">
-	        	  Learn New Kanji
-	        	  {% if current_page == 'learn_new_kanji' %}<span class="sr-only">(current)</span>{% endif %}
+	    <li class="nav-item {% if current_page == 'word_list' %}active{% endif %}">
+	    	<a class="nav-link" href="{% url 'study:word_list' %}">
+	        	  My Words
+	        	  {% if current_page == 'word_list' %}<span class="sr-only">(current)</span>{% endif %}
 	          </a>
 	    </li>
-	    <li class="nav-item {% if current_page == 'practice_kanji_in_progress' %}active{% endif %}">
-	    	<a class="nav-link" href="{% url 'study:practice_kanji_in_progress' %}">
-	        	  Practice Kanji in Progress
-	        	  {% if current_page == 'practice_kanji_in_progress' %}<span class="sr-only">(current)</span>{% endif %}
-	          </a>
-	    </li>
-	    <li class="nav-item {% if current_page == 'practice_completed_kanji' %}active{% endif %}">
-	    	<a class="nav-link" href="{% url 'study:practice_completed_kanji' %}">
-	        	  Practice Completed Kanji
-	        	  {% if current_page == 'practice_completed_kanji' %}<span class="sr-only">(current)</span>{% endif %}
-	          </a>
-	    </li>
+	    {% if user_can_learn_new_kanji %}
+		    <li class="nav-item {% if current_page == 'learn_new_kanji' %}active{% endif %}">
+		    	<a class="nav-link" href="{% url 'study:learn_new_kanji' %}">
+		        	  Learn New Kanji
+		        	  {% if current_page == 'learn_new_kanji' %}<span class="sr-only">(current)</span>{% endif %}
+		          </a>
+		    </li>
+		{% endif %}
+		{% if user_can_practice_unfinished_kanji %}
+		    <li class="nav-item {% if current_page == 'practice_kanji_in_progress' %}active{% endif %}">
+		    	<a class="nav-link" href="{% url 'study:practice_kanji_in_progress' %}">
+		        	  Practice Unfinished Kanji
+		        	  {% if current_page == 'practice_kanji_in_progress' %}<span class="sr-only">(current)</span>{% endif %}
+		          </a>
+		    </li>
+		{% endif %}
+		{% if user_can_practice_completed_kanji %}
+		    <li class="nav-item {% if current_page == 'practice_completed_kanji' %}active{% endif %}">
+		    	<a class="nav-link" href="{% url 'study:practice_completed_kanji' %}">
+		        	  Practice Completed Kanji
+		        	  {% if current_page == 'practice_completed_kanji' %}<span class="sr-only">(current)</span>{% endif %}
+		          </a>
+		    </li>
+		{% endif %}
 
 
 
@@ -50,8 +62,6 @@
     
     <ul class="navbar-nav">
       {% if user.is_authenticated %}
-      		
-      
 	      <li class="nav-item dropdown">
 	        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 	          {{ user.get_full_name }}

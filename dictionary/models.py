@@ -9,6 +9,14 @@ class LearnableConcept(models.Model):
         (TYPE_WORD, TYPE_WORD),
     )
     type = models.CharField(max_length=12, choices=TYPE_CHOICES)
+    
+    def __str__(self):
+        if self.type == self.TYPE_KANJI:
+            return str(self.kanji)
+        else:
+            return str(self.word)
+    
+    
 
 class Radical(models.Model):
     character               = models.CharField(max_length=1, unique=True)
@@ -16,6 +24,9 @@ class Radical(models.Model):
     stroke_count            = models.IntegerField(null=True, blank=True)
     identical_kanji         = models.ForeignKey('Kanji', 
                                     on_delete=models.SET_NULL, null=True, blank=True)
+    
+    def __str__(self):
+        return self.character
     
     def get_kanji_string(self):
         qKanji = self.kanji_set.all()
@@ -25,9 +36,8 @@ class Radical(models.Model):
         return ', '.join(kanji)
 
 class Kanji(models.Model):
-    # learnable concept is optional right now because I don't plan on teaching radicals
     concept             = models.OneToOneField(LearnableConcept, on_delete=models.CASCADE)
-    character               = models.CharField(max_length=1, unique=True)
+    character           = models.CharField(max_length=1, unique=True)
     meaning             = models.CharField(max_length=255, null=True, blank=True)
     main_pronunciation  = models.CharField(max_length=10, null=True, blank=True)
     stroke_count        = models.IntegerField(null=True, blank=True)
@@ -78,6 +88,9 @@ class Word(models.Model):
     is_proper_noun          = models.BooleanField(default=False)
     popularity              = models.IntegerField(null=True, blank=True)
     
+    def __str__(self):
+        return self.word
+    
     class Meta:
         ordering = ['popularity']
     
@@ -87,4 +100,7 @@ class Word(models.Model):
         for oKanji in self.kanji_set.all():
             response.append(oKanji.character)
         return ', '.join(response)
+    
+
+            
             
