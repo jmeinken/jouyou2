@@ -1,13 +1,13 @@
 from django.db import models
 
 from dictionary.models import LearnableConcept
-from django.contrib.auth import get_user_model
+# from user_manager.models import User
 
 
 class ConceptUser(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    user = models.ForeignKey('user_manager.User', on_delete=models.CASCADE)
     concept = models.ForeignKey(LearnableConcept, on_delete=models.CASCADE)
     level = models.IntegerField(default=0)
     

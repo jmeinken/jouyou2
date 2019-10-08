@@ -31,7 +31,7 @@
 	        	  {% if current_page == 'word_list' %}<span class="sr-only">(current)</span>{% endif %}
 	          </a>
 	    </li>
-	    {% if user_can_learn_new_kanji %}
+	    {% if user.allowed_to_learn_new_kanji %}
 		    <li class="nav-item {% if current_page == 'learn_new_kanji' %}active{% endif %}">
 		    	<a class="nav-link" href="{% url 'study:learn_new_kanji' %}">
 		        	  Learn New Kanji
@@ -39,7 +39,7 @@
 		          </a>
 		    </li>
 		{% endif %}
-		{% if user_can_practice_unfinished_kanji %}
+		{% if user.allowed_to_practice_unfinished_kanji %}
 		    <li class="nav-item {% if current_page == 'practice_kanji_in_progress' %}active{% endif %}">
 		    	<a class="nav-link" href="{% url 'study:practice_kanji_in_progress' %}">
 		        	  Practice Unfinished Kanji
@@ -47,7 +47,7 @@
 		          </a>
 		    </li>
 		{% endif %}
-		{% if user_can_practice_completed_kanji %}
+		{% if user.allowed_to_practice_completed_kanji %}
 		    <li class="nav-item {% if current_page == 'practice_completed_kanji' %}active{% endif %}">
 		    	<a class="nav-link" href="{% url 'study:practice_completed_kanji' %}">
 		        	  Practice Completed Kanji
