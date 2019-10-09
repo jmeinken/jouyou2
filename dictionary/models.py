@@ -89,6 +89,7 @@ class Word(models.Model):
     pronunciation_array     = models.TextField(default='[]')
     is_proper_noun          = models.BooleanField(default=False)
     popularity              = models.IntegerField(null=True, blank=True)
+    useful                  = models.BooleanField(default=True)
     
     def __str__(self):
         return self.word
@@ -102,6 +103,9 @@ class Word(models.Model):
         for oKanji in self.kanji_set.all():
             response.append(oKanji.character)
         return ', '.join(response)
+    
+    def get_simplified_definition(self):
+        return self.definition.split(';')[0]
     
 
             

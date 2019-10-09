@@ -9,9 +9,9 @@
 		<td>{{ oConceptUser.get_level_pretty|safe }}</td>
 		<td>
 			{% if level_change == 'increase' %}
-				<span class="text-success">+1</span>
+				<span class="text-success">+ 1</span>
 			{% elif level_change == 'decrease' %}
-				<span class="text-danger">-1</span>
+				<span class="text-danger">- 1</span>
 			{% elif level_change == 'no change' %}
 				<span class="text-muted">no change</span>
 			{% endif %}
@@ -19,13 +19,16 @@
 	</tr>
 </table>
 {% if unlocked_words %}
-	<h3 class="text-success">You unlocked {{ unlocked_words|length }} words!!!</h3>
+	<h3 class="text-success">
+		<i class="fa fa-unlock-alt fa-lg" aria-hidden="true"></i>
+		You unlocked {{ unlocked_words|length }} words!!!
+	</h3>
 	<table class="table table-striped table-bordered">
 		{% for oWord in unlocked_words %}
 			<tr>
-				<td>{{ oWord.word }}</td>
-				<td>{{ oWord.pronunciation }}</td>
-				<td>{{ oWord.definition }}</td>
+				<td style="min-width:8em;">{{ oWord.word }}</td>
+				<td style="min-width:8em;">{{ oWord.pronunciation }}</td>
+				<td>{{ oWord.get_simplified_definition }}</td>
 			</tr>
 		{% endfor %}
 	</table>

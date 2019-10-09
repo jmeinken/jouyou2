@@ -21,13 +21,19 @@
 
 	    <li class="nav-item {% if current_page == 'home' %}active{% endif %}">
 	    	<a class="nav-link" href="{% url 'study:home' %}">
-	        	  My Kanji <span class="badge badge-success">{{ user.count_completed_kanji }}</span>
+	        	  My Kanji 
+	        	  {% if user.count_completed_kanji %}
+	        	  	  <span class="badge badge-success">{{ user.count_completed_kanji }}</span>
+	        	  {% endif %}
 	        	  {% if current_page == 'home' %}<span class="sr-only">(current)</span>{% endif %}
 	          </a>
 	    </li>
 	    <li class="nav-item {% if current_page == 'word_list' %}active{% endif %}">
 	    	<a class="nav-link" href="{% url 'study:word_list' %}">
-	        	  My Words <span class="badge badge-success">{{ user.count_completed_words }}</span>
+	        	  My Words 
+	        	  {% if user.count_completed_words %}
+	        	  	<span class="badge badge-success">{{ user.count_completed_words }}</span>
+	        	  {% endif %}
 	        	  {% if current_page == 'word_list' %}<span class="sr-only">(current)</span>{% endif %}
 	          </a>
 	    </li>
@@ -42,8 +48,16 @@
 		{% if user.allowed_to_practice_unfinished_kanji %}
 		    <li class="nav-item {% if current_page == 'practice_kanji_in_progress' %}active{% endif %}">
 		    	<a class="nav-link" href="{% url 'study:practice_kanji_in_progress' %}">
-		        	  Practice Unfinished Kanji
+		        	  Practice Kanji
 		        	  {% if current_page == 'practice_kanji_in_progress' %}<span class="sr-only">(current)</span>{% endif %}
+		          </a>
+		    </li>
+		{% endif %}
+		{% if user.allowed_to_practice_unfinished_words %}
+		    <li class="nav-item {% if current_page == 'practice_words_in_progress' %}active{% endif %}">
+		    	<a class="nav-link" href="{% url 'study:practice_words_in_progress' %}">
+		        	  Practice Words
+		        	  {% if current_page == 'practice_words_in_progress' %}<span class="sr-only">(current)</span>{% endif %}
 		          </a>
 		    </li>
 		{% endif %}
@@ -62,6 +76,9 @@
     
     <ul class="navbar-nav">
       {% if user.is_authenticated %}
+          <span class="navbar-text">
+		    <span class="badge badge-info" style="font-size:1.3em;margin-top:-10px;margin-bottom:-10px;"><i class="fa fa-jpy" aria-hidden="true"></i> {{ user.score }}</span>
+		  </span>
 	      <li class="nav-item dropdown">
 	        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 	          {{ user.get_full_name }}

@@ -17,6 +17,35 @@ class ConceptUser(models.Model):
     level = models.IntegerField(default=0)
     
     def get_level_pretty(self):
+#         if self.level == 10:
+#             return self.get_level_pretty_old()
+        response = []
+        filled_circle = '<i class="fa fa-circle" aria-hidden="true"></i>'
+        check_circle = '<i class="fa fa-check-circle" aria-hidden="true"></i>'
+        large_circle = '<i class="fa fa-circle fa-lg" aria-hidden="true"></i>'
+        empty_circle = '<i class="fa fa-circle-thin text-muted" aria-hidden="true"></i>'
+        large_empty_circle = '<i class="fa fa-circle-thin fa-lg text-muted" aria-hidden="true"></i>'
+        response.append('<span class="text-danger">')
+        response.append(filled_circle if 1 <= self.level else empty_circle)
+        response.append(filled_circle if 2 <= self.level else empty_circle)
+        response.append(filled_circle if 3 <= self.level else empty_circle)
+        response.append(filled_circle if 4 <= self.level else empty_circle)
+        response.append(filled_circle if 5 <= self.level else empty_circle)
+        response.append('</span>')
+        response.append('<span class="text-warning">')
+        response.append(filled_circle if 6 <= self.level else empty_circle)
+        response.append(filled_circle if 7 <= self.level else empty_circle)
+        response.append(filled_circle if 8 <= self.level else empty_circle)
+        
+        response.append('</span>')
+        response.append('<span class="text-success">')
+        response.append(filled_circle if 9 <= self.level else empty_circle)
+        response.append(large_circle if 10 <= self.level else large_empty_circle)
+        response.append('</span>')
+        return ' '.join(response)
+        
+    
+    def get_level_pretty_old(self):
         if self.level <=5:
             color='text-danger'
         elif self.level < 10:
@@ -26,7 +55,7 @@ class ConceptUser(models.Model):
         response = []
         for i in range(10):
             if self.level == 10:
-                response.append('<i class="fa fa-check-circle {}" aria-hidden="true"></i>'.format(color))
+                response.append('<i class="fa fa-circle {}" aria-hidden="true"></i>'.format(color))
             elif i < self.level:
                 response.append('<i class="fa fa-circle {}" aria-hidden="true"></i>'.format(color))
             else:

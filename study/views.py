@@ -97,6 +97,27 @@ def practice_kanji_in_progress(request):
     }
     return render(request, 'study/practice_kanji_in_progress.html', context)
 
+@login_required
+def practice_words_in_progress(request):
+    # if too few in progress, return error message
+    
+    # choose a kanji
+    oConceptUser = quiz.choose_a_word(request.user)
+    question, answers, correct_answer = quiz.build_a_quiz_for_word(oConceptUser)
+        
+
+     
+    context = {
+        'current_page' : 'practice_words_in_progress',
+        'question' : question,
+        'answers' : answers,
+        'correct_answer' : correct_answer,
+        'oConceptUser' : oConceptUser,
+    }
+    return render(request, 'study/practice_words_in_progress.html', context)
+
+
+
 @login_required  
 def practice_completed_kanji(request):
     # if none, return error message

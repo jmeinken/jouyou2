@@ -1,1 +1,27 @@
-WORD: {{ oWord }}
+
+{% if oWord.grade %}
+	<div class="text-muted" style="float:right;">
+		Ranking {{ oWord.popularity }}
+	</div>
+{% endif %}
+
+{% include 'study/snippets/word_quick_details.html' %}
+<hr>
+
+<div class="row">
+	<div class="col-sm-4" style="max-width:400px;">
+		<h5>Radicals</h5>
+		<table class="table">
+			{% for oKanji in oWord.kanji_set.all %}
+				<tr>
+					<th>{{ oKanji.character }}</th>
+					<td>{{ oKanji.meaning }}</td>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+	<div class="col-sm-8" style="max-width:800px;">
+		<h5>Full Definition</h5>
+		{{ oWord.definition }}
+	</div>
+</div>

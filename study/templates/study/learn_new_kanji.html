@@ -22,7 +22,7 @@
 			{% csrf_token %}
 			<input type="hidden" name="destination" value="{% url 'study:home' %}" />
 			<input type="hidden" name="concept_id" value="{{ oKanji.concept.id }}">
-			<button class="btn btn-primary mr-1 my-2">
+			<button class="btn btn-success mr-1 my-2">
 				<i class="fa fa-check" aria-hidden="true"></i>
 				OK and return to My List
 			</button>
@@ -32,7 +32,7 @@
 			{% csrf_token %}
 			<input type="hidden" name="destination" value="{% url 'study:learn_new_kanji' %}" />
 			<input type="hidden" name="concept_id" value="{{ oKanji.concept.id }}">
-			<button class="btn btn-primary my-2">
+			<button class="btn btn-success my-2">
 				<i class="fa fa-check" aria-hidden="true"></i>
 				OK and next kanji
 				<i class="fa fa-arrow-right" aria-hidden="true"></i>
@@ -41,43 +41,7 @@
 	</div>
 </div>
 <hr>
-{% include 'study/snippets/kanji_quick_details.html' %}
-<hr>
-
-<div class="row">
-	<div class="col-sm-6" style="max-width:400px;">
-		<h5>Radicals</h5>
-		<table class="table">
-			{% for oRadical in oKanji.radicals.all %}
-				<tr>
-					<th>{{ oRadical.character }}</th>
-					<td>{{ oRadical.meaning }}</td>
-				</tr>
-			{% endfor %}
-		</table>
-		<h5>Pronunciations</h5>
-		<table class="table">
-			{% for oPron in oKanji.pronunciation_set.all %}
-				<tr>
-					<th>{{ oPron.type }}</th>
-					<td>{{ oPron.pronunciation }}</td>
-				</tr>
-			{% endfor %}
-		</table>
-	</div>
-	<div class="col-sm-6" style="max-width:800px;">
-		<h5>Words</h5>
-		<table class="table">
-			{% for oWord in oKanji.word_set.all %}
-				<tr>
-					<th style="min-width:10em;">{{ oWord.word }}</th>
-					<td>{{ oWord.pronunciation }}</td>
-					<td>{{ oWord.definition }}</td>
-				</tr>
-			{% endfor %}
-		</table>
-	</div>
-</div>
+{% include 'study/snippets/kanji_details.html' %}
 
 
 

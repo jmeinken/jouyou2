@@ -36,6 +36,7 @@ $(document).ready(function() {
 <table class="table table-bordered table-striped table-sm">
 	<thead>
 		<th style="min-width:200px;">Word</th>
+		<th>Meaning</th>
 		<th>Level</th>
 		<th>Started</th>
 	</thead>
@@ -46,11 +47,12 @@ $(document).ready(function() {
 				<td style="text-align:center;font-size:1.6em;">
 					<strong>{{ oCU.concept.word.word }}</strong>
 				</td>
+				<td>{{ oCU.concept.word.definition }}</td>
 				<td style="vertical-align: middle;">
 					&nbsp;&nbsp;{{ oCU.get_level_pretty|safe }}
 				</td>
 				<td style="vertical-align: middle;">
-					{{ oCU.created }}
+					{{ oCU.created|date:'SHORT_DATE_FORMAT' }}
 				</td>
 			</tr>
 		{% endfor %}

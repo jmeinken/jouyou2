@@ -2,8 +2,6 @@
 
 {% block content %}
 
-
-
 <script>
 
 var playAnimation = function(callback, elem) {
@@ -22,12 +20,6 @@ var playAnimation = function(callback, elem) {
 
 $(document).ready(function() {
 	
-	$(document).keypress(function(e) {
-	    if(e.which == 13) {
-	        location.reload(true);
-	    }
-	});
-	
 	$('.quiz-answer-option').click(function() {
 		var timeleft = 3;
 		var elem = $(this);
@@ -43,7 +35,7 @@ $(document).ready(function() {
 				elem.addClass('btn-success');
 			}
 			// update progress for this concept
-			var url = "{% url 'study:quiz_submit_answer' %}";
+			var url = "{% url 'study:quiz_submit_answer_for_word' %}";
 			var data = {
 				concept_user_id : {{ oConceptUser.id }},
 				correct : correct
@@ -67,12 +59,12 @@ $(document).ready(function() {
 
 <div class="row">
 	<div class="col-md-6">
-		<h1>Practice Unfinished Kanji</h1>
+		<h1>Practice Unfinished Words</h1>
 		<hr>
 		<div class="display-1">{{question}}</div>
 		<hr>
 		{% for answer in answers %}
-			<button type="button" class="btn btn-secondary quiz-answer-option btn-lg" data-value="{{ answer.1 }}">
+			<button type="button" class="btn btn-secondary quiz-answer-option btn-lg mb-2" data-value="{{ answer.1 }}">
 				{{ answer.0 }}
 			</button>
 		{% endfor %}
@@ -80,7 +72,7 @@ $(document).ready(function() {
 	<div class="col-md-6">
 		<div id="correct-answer-div" style="display:none;">
 			<div style="text-align:right;">
-				<a href="{% url 'study:practice_kanji_in_progress' %}" class="btn btn-info btn-lg">
+				<a href="{% url 'study:practice_words_in_progress' %}" class="btn btn-info btn-lg">
 					Next Question
 					<i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
 				</a>

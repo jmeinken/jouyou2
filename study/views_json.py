@@ -64,6 +64,30 @@ def quiz_submit_answer(request):
     context['oConceptUser'] = oConceptUser
     response['html_second'] = render_to_string('study/snippets/quiz_progress.html', context, request=request)
     return JsonResponse(response)
+
+def quiz_submit_answer_for_word(request):
+    concept_user_id = request.GET.get('concept_user_id')
+    correct_str = request.GET.get('correct')
+    correct = True if correct_str == 'true' else False
+    print(correct, type(correct))
+    oConceptUser = get_object_or_404(ConceptUser, pk=concept_user_id)
+    context = {}
+    response = {}
+    context['oConceptUser'] = oConceptUser
+    response['html_first'] = render_to_string('study/snippets/quiz_progress.html', context, request=request)
+    if correct and oConceptUser.level < 10:
+        context['level_change'] = 'increase'
+        oConceptUser.level += 1
+    if not correct and oConceptUser.level < 10 and oConceptUser.level > 0:
+        context['level_change'] = 'decrease'
+        oConceptUser.level -= 1
+    if not correct and oConceptUser.level == 0:
+        context['level_change'] = 'no change'
+    oConceptUser.save()    # this also marks it as modified
+    context['unlocked_words'] = oConceptUser.attempt_to_unlock_related_words()
+    context['oConceptUser'] = oConceptUser
+    response['html_second'] = render_to_string('study/snippets/quiz_progress.html', context, request=request)
+    return JsonResponse(response)
         
 
 def lookup_concept_detailed(request, concept_id):

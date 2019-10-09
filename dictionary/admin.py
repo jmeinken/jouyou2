@@ -19,7 +19,8 @@ class RadicalAdmin(admin.ModelAdmin):
 admin.site.register(models.Radical, RadicalAdmin)
 
 class WordAdmin(admin.ModelAdmin):
-    list_display = ('word', 'kanji_set_string', 'definition', 'pronunciation', 'is_proper_noun', 'popularity')
+    list_display = ('word', 'pronunciation', 'useful', 'kanji_set_string', 'definition',  'is_proper_noun', 'popularity',  )
     filter_horizontal = ('kanji_set', )
+    list_editable = ('pronunciation', 'useful', )
     
 admin.site.register(models.Word, WordAdmin)
