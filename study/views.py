@@ -7,6 +7,7 @@ from django.contrib import messages
 from dictionary.models import LearnableConcept
 from . import models
 from . import quiz
+from .badges import badge_list
 
 @login_required
 def home(request):
@@ -33,6 +34,16 @@ def home(request):
         'completed_count' : completed_count,
     }
     return render(request, 'study/home.html', context)
+
+@login_required
+def badges(request):
+    
+    
+    context = {
+        'current_page' : 'badges',
+        'badge_list' : badge_list,
+    }
+    return render(request, 'study/badges.html', context)
 
 @login_required
 def word_list(request):

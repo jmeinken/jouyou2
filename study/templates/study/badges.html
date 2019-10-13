@@ -1,0 +1,16 @@
+{% extends 'study/core/base.html' %}
+
+{% block content %}
+
+
+<h1>Badges</h1>
+
+{% for name, details in badge_list.items %}
+	<h1>{{ details.label }}</h1>
+	{{ details.task }}
+	<hr>
+{% endfor %}
+
+{% endblock %}
+
+

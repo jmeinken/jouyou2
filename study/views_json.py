@@ -48,9 +48,11 @@ def quiz_submit_answer(request):
     print(correct, type(correct))
     oConceptUser = get_object_or_404(ConceptUser, pk=concept_user_id)
     context = {}
-    response = {}
+    response = {'just_completed' : False}
     context['oConceptUser'] = oConceptUser
     response['html_first'] = render_to_string('study/snippets/quiz_progress.html', context, request=request)
+    if correct and oConceptUser.level == 9:
+        response['just_completed'] = True
     if correct and oConceptUser.level < 10:
         context['level_change'] = 'increase'
         oConceptUser.level += 1
@@ -72,9 +74,11 @@ def quiz_submit_answer_for_word(request):
     print(correct, type(correct))
     oConceptUser = get_object_or_404(ConceptUser, pk=concept_user_id)
     context = {}
-    response = {}
+    response = {'just_completed' : False}
     context['oConceptUser'] = oConceptUser
     response['html_first'] = render_to_string('study/snippets/quiz_progress.html', context, request=request)
+    if correct and oConceptUser.level == 9:
+        response['just_completed'] = True
     if correct and oConceptUser.level < 10:
         context['level_change'] = 'increase'
         oConceptUser.level += 1

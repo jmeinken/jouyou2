@@ -78,7 +78,7 @@ def kanjidic_generator():
                 entry['popularity'] = elem.text
             if elem.tag == 'jlpt':
                 entry['jlpt_level'] = elem.text
-            if elem.tag == 'meaning' and not 'm_lang' in elem.attrib and meaning_count < 2:
+            if elem.tag == 'meaning':
                 entry['meanings'].append(elem.text)
                 meaning_count += 1
             if elem.tag == 'reading' and elem.attrib['r_type'] == 'ja_on':

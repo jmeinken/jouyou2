@@ -20,11 +20,11 @@ class ConceptUser(models.Model):
 #         if self.level == 10:
 #             return self.get_level_pretty_old()
         response = []
-        filled_circle = '<i class="fa fa-circle" aria-hidden="true"></i>'
-        check_circle = '<i class="fa fa-check-circle" aria-hidden="true"></i>'
-        large_circle = '<i class="fa fa-circle fa-lg" aria-hidden="true"></i>'
-        empty_circle = '<i class="fa fa-circle-thin text-muted" aria-hidden="true"></i>'
-        large_empty_circle = '<i class="fa fa-circle-thin fa-lg text-muted" aria-hidden="true"></i>'
+        filled_circle = '<i class="fa fa-circle level-indicator" aria-hidden="true"></i>'
+        check_circle = '<i class="fa fa-check-circle level-indicator" aria-hidden="true"></i>'
+        large_circle = '<i class="fa fa-circle fa-lg level-indicator" aria-hidden="true"></i>'
+        empty_circle = '<i class="fa fa-circle-thin text-muted level-indicator" aria-hidden="true"></i>'
+        large_empty_circle = '<i class="fa fa-circle-thin fa-lg text-muted level-indicator" aria-hidden="true"></i>'
         response.append('<span class="text-danger">')
         response.append(filled_circle if 1 <= self.level else empty_circle)
         response.append(filled_circle if 2 <= self.level else empty_circle)

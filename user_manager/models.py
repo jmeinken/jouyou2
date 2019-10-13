@@ -21,7 +21,7 @@ class User(AbstractUser):
             concept__type=LearnableConcept.TYPE_KANJI,
             level__lt=10
         )
-        return True if qConcept.count() <= 50 else False
+        return True if qConcept.count() <= 30 else False
       
     def allowed_to_practice_unfinished_kanji(self):
         qConcept = ConceptUser.objects.filter(

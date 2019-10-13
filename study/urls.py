@@ -19,5 +19,8 @@ urlpatterns = [
    path('practice_words_in_progress', views.practice_words_in_progress, name='practice_words_in_progress'),
    
    path('word_list', views.word_list, name='word_list'),
+   
+   path('badges', views.badges, name='badges'),
+   
    path('', views.home, name='home'),
 ]

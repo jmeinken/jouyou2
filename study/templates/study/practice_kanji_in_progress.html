@@ -20,6 +20,15 @@ var playAnimation = function(callback, elem) {
 	}, 500);
 }
 
+var animateIndicator = function() {
+	$(".level-indicator").animate({
+      	width: '40px'
+    }).animate({
+      	width: '1px'
+    });
+	animateIndicator();
+}
+
 $(document).ready(function() {
 	
 	$(document).keypress(function(e) {
@@ -51,7 +60,11 @@ $(document).ready(function() {
 			$.getJSON( url, data, function( json ) {
 				$('#correct-answer-div').show();
 				$('#progress-div').html(json.html_second);
+				if (json.just_completed) {
+					animateIndicator();
+				}
 			});
+			
 		}
 		playAnimation(callback, elem);
 		

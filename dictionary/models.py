@@ -31,10 +31,10 @@ class Radical(models.Model):
         return self.character
     
     def get_kanji_string(self):
-        qKanji = self.kanji_set.all()
+        qKanji = self.kanji_set.all().order_by('grade')
         kanji = []
         for oKanji in qKanji:
-            kanji.append(oKanji.character)
+            kanji.append('{} ({})'.format(oKanji.character, oKanji.grade))
         return ', '.join(kanji)
 
 class Kanji(models.Model):
@@ -66,6 +66,9 @@ class Kanji(models.Model):
                 radicals.append(oRadical.character)
         return ', '.join(radicals)
     
+    def get_simplified_meaning(self):
+        return self.meaning.split(',')[0]
+    
 class Pronunciation(models.Model):
     TYPE_ON_YOMI = 'on-yomi'
     TYPE_KUN_YOMI = 'kun-yomi'
@@ -95,7 +98,7 @@ class Word(models.Model):
         return self.word
     
     class Meta:
-        ordering = ['popularity']
+        ordering = ['pronunciation']
     
     def kanji_set_string(self):
         # mostly used for verifying word associations are OK
