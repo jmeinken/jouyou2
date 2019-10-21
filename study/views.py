@@ -37,11 +37,12 @@ def home(request):
 
 @login_required
 def badges(request):
-    
+    earned_badges = ['money man', 'high roller', 'kanji baby']
     
     context = {
         'current_page' : 'badges',
         'badge_list' : badge_list,
+        'earned_badges' : earned_badges,
     }
     return render(request, 'study/badges.html', context)
 

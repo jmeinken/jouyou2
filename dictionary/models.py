@@ -22,7 +22,7 @@ class LearnableConcept(models.Model):
 
 class Radical(models.Model):
     character               = models.CharField(max_length=1, unique=True)
-    meaning                 = models.CharField(max_length=255, null=True, blank=True)
+    meaning                 = models.TextField(null=True, blank=True)
     stroke_count            = models.IntegerField(null=True, blank=True)
     identical_kanji         = models.ForeignKey('Kanji', 
                                     on_delete=models.SET_NULL, null=True, blank=True)
@@ -40,7 +40,7 @@ class Radical(models.Model):
 class Kanji(models.Model):
     concept             = models.OneToOneField(LearnableConcept, on_delete=models.CASCADE)
     character           = models.CharField(max_length=1, unique=True)
-    meaning             = models.CharField(max_length=255, null=True, blank=True)
+    meaning             = models.TextField(null=True, blank=True)
     main_pronunciation  = models.CharField(max_length=10, null=True, blank=True)
     stroke_count        = models.IntegerField(null=True, blank=True)
     grade               = models.IntegerField(null=True, blank=True)

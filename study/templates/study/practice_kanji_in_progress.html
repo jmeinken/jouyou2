@@ -17,7 +17,7 @@ var playAnimation = function(callback, elem) {
 		} else {
 			$('#progress-div').html('<span class="display-1">' + timeleft + '</span>');
 		}
-	}, 500);
+	}, 300);
 }
 
 var animateIndicator = function() {
@@ -34,6 +34,18 @@ $(document).ready(function() {
 	$(document).keypress(function(e) {
 	    if(e.which == 13) {
 	        location.reload(true);
+	    }
+	    if(e.which == 49) {
+	        $('#quiz-answer-option-1').trigger("click");
+	    }
+	    if(e.which == 50) {
+	    	$('#quiz-answer-option-2').trigger("click");
+	    }
+	    if(e.which == 51) {
+	    	$('#quiz-answer-option-3').trigger("click");
+	    }
+	    if(e.which == 52) {
+	    	$('#quiz-answer-option-4').trigger("click");
 	    }
 	});
 	
@@ -85,8 +97,9 @@ $(document).ready(function() {
 		<div class="display-1">{{question}}</div>
 		<hr>
 		{% for answer in answers %}
-			<button type="button" class="btn btn-secondary quiz-answer-option btn-lg" data-value="{{ answer.1 }}">
-				{{ answer.0 }}
+			<button type="button" class="btn btn-secondary quiz-answer-option btn-lg" data-value="{{ answer.1 }}"
+					data-number="{{ forloop.counter }}" id="quiz-answer-option-{{ forloop.counter }}">
+				{{ forloop.counter }}. {{ answer.0 }}
 			</button>
 		{% endfor %}
 	</div>

@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.contrib.auth.models import AbstractUser
 from django.db.models import Sum
 
-from study.models import ConceptUser
+from study.models import ConceptUser, UserBadge
 from dictionary.models import LearnableConcept
 
 
@@ -62,6 +62,13 @@ class User(AbstractUser):
             level=10
         )
         return qCU.count()
+    
+    def badges_earned(self):
+        qBadge = UserBadge.objects.filter(user=self)
+        response = []
+        for oBadge in qBadge:
+            response.append(oBadge.badge_name)
+        return response
     
     
     

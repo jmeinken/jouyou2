@@ -1,12 +1,12 @@
-from settings_global import *
+from .settings import *
 
-LOGIN_URL = '/jouyou/login'
-FORCE_SCRIPT_NAME = '/jouyou/'
+LOGIN_URL = '/kanji/login'
+FORCE_SCRIPT_NAME = '/kanji/'
 
-STATIC_URL = '/jouyou/static/'
+STATIC_URL = '/kanji/static/'
 
-CSRF_COOKIE_NAME = 'jouyou_csrftoken'
-SESSION_COOKIE_NAME = 'jouyou_sessionid'
+CSRF_COOKIE_NAME = 'kanji_csrftoken'
+SESSION_COOKIE_NAME = 'kanji_sessionid'
 
 DEBUG = True
 ALLOWED_HOSTS = ['*']

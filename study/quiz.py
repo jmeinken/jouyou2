@@ -52,12 +52,18 @@ def build_a_quiz(oCU):
     quiz_types = ['main_pronunciation', 'meaning']
     quiz_type = random.choice(quiz_types)
     answers = []
-    correct_answer = getattr(oCU.concept.kanji, quiz_type)
+    if quiz_type == 'meaning':
+        correct_answer = oCU.concept.kanji.get_simplified_meaning()
+    else:
+        correct_answer = getattr(oCU.concept.kanji, quiz_type)
     exclude = {quiz_type: correct_answer}
     qKanji = Kanji.objects.exclude(**exclude).order_by('?')[:3]
     answers.append( [correct_answer, 1] )
     for oKanji in qKanji:
-        answers.append( [getattr(oKanji, quiz_type), 0] )
+        if quiz_type == 'meaning':
+            answers.append( [oKanji.get_simplified_meaning(), 0] )
+        else:
+            answers.append( [getattr(oKanji, quiz_type), 0] )
     random.shuffle(answers)
     correct_answer_string = render_to_string('study/snippets/kanji_quick_details.html', {'oKanji' : oCU.concept.kanji})
     return (question, answers, correct_answer_string)

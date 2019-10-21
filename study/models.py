@@ -4,6 +4,17 @@ from dictionary.models import LearnableConcept
 # from user_manager.models import User
 
 
+
+class UserBadge(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey('user_manager.User', on_delete=models.CASCADE)
+    badge_name = models.CharField(max_length=120)
+    user_alerted = models.BooleanField(default=False)
+    
+    class Meta:
+        unique_together = (("user", "badge_name"),)
+
+
 def get_concept_user_for_concept(oConcept, oUser):
     oConceptUser = ConceptUser.objects.filter(concept=oConcept, user=oUser).first()
     return oConceptUser
