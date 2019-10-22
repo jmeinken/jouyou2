@@ -115,21 +115,37 @@ def check_if_badge_earned(badge_name, oUser):
     if badge_name == 'word god':
         return True if oUser.count_completed_words() >= 2000 else False
     if badge_name == 'word_walker':
-        return True if Kanji.objects.filter(radicals__character='儿').count() >= 5 else False
+        return True if Kanji.objects.filter(radicals__character='儿').filter(
+            concept__conceptuser__user=oUser    
+        ).count() >= 5 else False
     if badge_name == 'Mr. White':
-        return True if Kanji.objects.filter(radicals__character='白').count() >= 5 else False
+        return True if Kanji.objects.filter(radicals__character='白').filter(
+            concept__conceptuser__user=oUser    
+        ).count() >= 5 else False
     if badge_name == 'earth worm':
-        return True if Kanji.objects.filter(radicals__character='土').count() >= 10 else False
+        return True if Kanji.objects.filter(radicals__character='土').filter(
+            concept__conceptuser__user=oUser    
+        ).count() >= 10 else False
     if badge_name == 'solar flare':
-        return True if Kanji.objects.filter(radicals__character='日').count() >= 15 else False
+        return True if Kanji.objects.filter(radicals__character='日').filter(
+            concept__conceptuser__user=oUser    
+        ).count() >= 15 else False
     if badge_name == 'thirsty boy':
-        return True if Kanji.objects.filter(radicals__character='水').count() >= 5 else False
+        return True if Kanji.objects.filter(radicals__character='水').filter(
+            concept__conceptuser__user=oUser    
+        ).count() >= 5 else False
     if badge_name == 'hott stuff':
-        return True if Kanji.objects.filter(radicals__character='火').count() >= 5 else False
+        return True if Kanji.objects.filter(radicals__character='火').filter(
+            concept__conceptuser__user=oUser    
+        ).count() >= 5 else False
     if badge_name == 'ghost slayer':
-        return True if Kanji.objects.filter(radicals__character='尸').count() >= 10 else False
+        return True if Kanji.objects.filter(radicals__character='尸').filter(
+            concept__conceptuser__user=oUser    
+        ).count() >= 10 else False
     if badge_name == 'ninja':
-        return True if Kanji.objects.filter(radicals__character='刀').count() >= 10 else False
+        return True if Kanji.objects.filter(radicals__character='刀').filter(
+            concept__conceptuser__user=oUser    
+        ).count() >= 10 else False
             
 
 

@@ -24,7 +24,7 @@ def unlock_words_associated_with_kanji(sender, instance, created, **kwargs):
 def unlock_badges(sender, instance, created, **kwargs):
     if instance.level != 10:
         return
-    badges_earned = UserBadge.badges_earned()
+    badges_earned = instance.user.badges_earned()
     for badge_name, entry in badge_list.items():
         if not badge_name in badges_earned and check_if_badge_earned(badge_name, instance.user):
             oBadge = UserBadge(user=instance.user, badge_name=badge_name)

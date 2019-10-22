@@ -38,6 +38,7 @@ def home(request):
 @login_required
 def badges(request):
     earned_badges = ['money man', 'high roller', 'kanji baby']
+    earned_badges = request.user.badges_earned()
     
     context = {
         'current_page' : 'badges',
