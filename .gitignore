@@ -2,6 +2,7 @@
 
 *.sqlite3
 
+settings.py
 settings_production.py
 settings_local.py
 
