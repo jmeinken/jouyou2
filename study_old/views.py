@@ -9,68 +9,6 @@ from . import models
 from . import quiz
 from .badges import badge_list
 
-
-
-
-
-
-@login_required
-def practice(request):
-    # if fewer than 15 kanji in active list, do a new kanji
-    active_kanji_count = models.ConceptUser.objects.filter(
-        user=request.user, concept__type=LearnableConcept.TYPE_KANJI, level__lt=10
-    ).count()
-    if active_kanji_count < 15:
-        oConceptNextKanji = LearnableConcept.objects.exclude(
-                conceptuser__user=request.user,
-            ).filter(
-            type=LearnableConcept.TYPE_KANJI
-        ).order_by('kanji__grade', 'kanji__popularity').first()
-        oConceptUser, created = models.ConceptUser.objects.get_or_create(
-            concept=oConceptNextKanji,
-            user=request.user
-        )
-    else:
-        # else select an existing unfinished concept (kanji or word)
-        oConceptUser = quiz.choose_a_concept(request.user, include_completed=False)
-    # prepare the quiz for the selected concept
-    question, answers, correct_answer = quiz.build_a_quiz(oConceptUser)
-    context = {
-        'current_page' : 'practice',
-        'question' : question,
-        'answers' : answers,
-        'correct_answer' : correct_answer,
-        'oConceptUser' : oConceptUser,
-    }
-    return render(request, 'study/practice.html', context)
-
-@login_required
-def review(request):
-    # if fewer than 15 kanji in active list, do a new kanji
-    finished_concept_count = models.ConceptUser.objects.filter(
-        level=10, user=request.user, 
-    ).count()
-    print(finished_concept_count)
-    if finished_concept_count < 15:
-        return render(request, 'study/review_not_ready.html', {})
-    else:
-        # else select an existing unfinished concept (kanji or word)
-        oConceptUser = quiz.choose_a_concept(request.user, include_completed=False)
-    # prepare the quiz for the selected concept
-    question, answers, correct_answer = quiz.build_a_quiz(oConceptUser)
-    context = {
-        'current_page' : 'review',
-        'question' : question,
-        'answers' : answers,
-        'correct_answer' : correct_answer,
-        'oConceptUser' : oConceptUser,
-    }
-    return render(request, 'study/review.html', context)
-
-
-
-
-
 @login_required
 def home(request):
     
@@ -101,7 +39,7 @@ def home(request):
 def badges(request):
     earned_badges = ['money man', 'high roller', 'kanji baby']
     earned_badges = request.user.badges_earned()
-    request.user.mark_new_badges_viewed()
+    
     context = {
         'current_page' : 'badges',
         'badge_list' : badge_list,

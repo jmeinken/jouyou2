@@ -22,8 +22,5 @@ urlpatterns = [
    
    path('badges', views.badges, name='badges'),
    
-   path('practice', views.practice, name='practice'),
-   path('review', views.review, name='review'),
-   
    path('', views.home, name='home'),
 ]

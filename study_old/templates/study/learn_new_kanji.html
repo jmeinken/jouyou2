@@ -1,0 +1,53 @@
+{% extends 'study/core/base.html' %}
+
+{% block content %}
+
+<style>
+	form {
+		display: inline;
+	}
+</style>
+
+
+<div class="row">
+	<div class="col-md-6">
+		<h1>Learn New Kanji</h1>
+	</div>
+	<div class="col-md-6" style="text-align:right;">
+		<a href="{% url 'study:home' %}" class="btn btn-secondary mr-1 my-2">
+			Quit
+		</a>
+		
+		<form method="post">
+			{% csrf_token %}
+			<input type="hidden" name="destination" value="{% url 'study:home' %}" />
+			<input type="hidden" name="concept_id" value="{{ oKanji.concept.id }}">
+			<button class="btn btn-success mr-1 my-2">
+				<i class="fa fa-check" aria-hidden="true"></i>
+				OK and return to My List
+			</button>
+		</form>
+		
+		<form method="post">
+			{% csrf_token %}
+			<input type="hidden" name="destination" value="{% url 'study:learn_new_kanji' %}" />
+			<input type="hidden" name="concept_id" value="{{ oKanji.concept.id }}">
+			<button class="btn btn-success my-2">
+				<i class="fa fa-check" aria-hidden="true"></i>
+				OK and next kanji
+				<i class="fa fa-arrow-right" aria-hidden="true"></i>
+			</button>
+		</form>
+	</div>
+</div>
+<hr>
+{% include 'study/snippets/kanji_details.html' %}
+
+
+
+{% endblock %}
+
+
+
+
+

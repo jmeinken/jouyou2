@@ -16,16 +16,14 @@ def get_concept_user_for_concept(oConcept, oUser):
 
 @receiver(models.signals.post_save, sender=ConceptUser)
 def unlock_words_associated_with_kanji(sender, instance, created, **kwargs):
-    if instance.level != 10:
-        return
-    instance.attempt_to_unlock_related_words()
+    # instance.attempt_to_unlock_related_words()
+    pass
 
 
 @receiver(models.signals.post_save, sender=ConceptUser)
 def unlock_badges(sender, instance, created, **kwargs):
-    # money badges can be returned at any time
-#     if instance.level != 10:
-#         return
+    if instance.level != 10:
+        return
     badges_earned = instance.user.badges_earned()
     for badge_name, entry in badge_list.items():
         if not badge_name in badges_earned and check_if_badge_earned(badge_name, instance.user):

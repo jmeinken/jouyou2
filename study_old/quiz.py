@@ -7,25 +7,7 @@ from . import models
 from dictionary.models import LearnableConcept, Kanji, Word
 
 
-
 def choose_a_concept(oUser, 
-        include_unfinished=True, include_completed=True, 
-        include_kanji=True, include_words=True
-    ):
-    oCU = models.ConceptUser.objects.filter(user=oUser)
-    if include_kanji and not include_words:
-        oCU = oCU.filter(concept__type=LearnableConcept.TYPE_KANJI)
-    elif include_words and not include_kanji:
-        oCU = oCU.filter(concept__type=LearnableConcept.TYPE_WORD)
-    if include_unfinished and not include_completed:
-        oCU = oCU.filter(level__lt=10)
-    elif include_completed and not include_unfinished:
-        oCU = oCU.filter(level=10)
-    oCU = oCU.order_by('modified')[:5]
-    max_length = oCU.count() - 1
-    return oCU[random.randint(0,max_length)]
-
-def choose_a_concept_old(oUser, 
         include_unfinished=True, include_completed=True, 
         include_kanji=True, include_words=True):
     oCU = models.ConceptUser.objects.filter(
@@ -65,8 +47,6 @@ def build_a_quiz_for_word(oCU):
     return (question, answers, correct_answer_string)
 
 def build_a_quiz(oCU):
-    if oCU.concept.type == oCU.concept.TYPE_WORD:
-        return build_a_quiz_for_word(oCU)
     question = oCU.concept.kanji.character
     # create answers list
     quiz_types = ['main_pronunciation', 'meaning']

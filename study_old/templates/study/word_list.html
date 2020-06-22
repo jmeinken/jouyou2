@@ -2,21 +2,7 @@
 
 {% block content %}
 
-
-<style>
-.lookup-concept-detailed {
-	cursor:pointer;
-}
-.complete-concept-row td {
-	background-color: #adebbb;
-}
-
-</style>
-
-<script type="text/javascript">
-
-
-
+<script>
 $(document).ready(function() {
 	
 	$('.lookup-concept-detailed').click(function() {
@@ -30,16 +16,15 @@ $(document).ready(function() {
 
 	
 });
-
-
 </script>
+
 
 <div class="row">
 	<div class="col-sm-6">
-		<h1>My Kanji</h1>
+		<h1>My Words</h1>
 	</div>
 	<div class="col-sm-6 text-right h1">
-		Mastered Kanji: 
+		Completed Words: 
 		
 		<span class="badge {% if completed_count == 0 %}badge-danger{% else %}badge-success{% endif %}">
 			{{ completed_count }}
@@ -50,17 +35,19 @@ $(document).ready(function() {
 
 <table class="table table-bordered table-striped table-sm">
 	<thead>
-		<th style="width:200px;">Kanji</th>
+		<th style="min-width:200px;">Word</th>
+		<th>Meaning</th>
 		<th>Level</th>
 		<th>Started</th>
 	</thead>
 	<tbody>
-		{% for oCU in qConceptUserKanji %}
-			<tr class="lookup-concept-detailed {% if oCU.level == 10 %}complete-concept-row{% endif %}"
+		{% for oCU in qConceptUserWord %}
+			<tr class="lookup-concept-detailed {% if oCU.level == 10 %}table-success{% endif %}"
 					data-url={% url 'study:lookup_concept_detailed' oCU.concept.id %}>
 				<td style="text-align:center;font-size:1.6em;">
-					<strong>{{ oCU.concept.kanji.character }}</strong>
+					<strong>{{ oCU.concept.word.word }}</strong>
 				</td>
+				<td>{{ oCU.concept.word.get_simplified_definition }}</td>
 				<td style="vertical-align: middle;">
 					&nbsp;&nbsp;{{ oCU.get_level_pretty|safe }}
 				</td>
@@ -72,17 +59,13 @@ $(document).ready(function() {
 	</tbody>
 </table>
 
-
-
-
-
-
 <div class="modal" id="concept-details-modal">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 		
 			<!-- Modal Header -->
 			<div class="modal-header">
+			  	<h4 class="modal-title">Modal Heading</h4>
 			  	<button type="button" class="close" data-dismiss="modal">&times;</button>
 			</div>
 			

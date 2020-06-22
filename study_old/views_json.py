@@ -62,7 +62,7 @@ def quiz_submit_answer(request):
     if not correct and oConceptUser.level == 0:
         context['level_change'] = 'no change'
     oConceptUser.save()    # this also marks it as modified
-    # context['unlocked_words'] = oConceptUser.attempt_to_unlock_related_words()
+    context['unlocked_words'] = oConceptUser.attempt_to_unlock_related_words()
     context['oConceptUser'] = oConceptUser
     response['html_second'] = render_to_string('study/snippets/quiz_progress.html', context, request=request)
     return JsonResponse(response)

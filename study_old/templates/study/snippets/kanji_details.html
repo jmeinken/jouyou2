@@ -1,0 +1,44 @@
+
+{% if oKanji.grade %}
+	<div class="text-muted" style="float:right;">
+		Grade {{ oKanji.grade }}
+	</div>
+{% endif %}
+
+{% include 'study/snippets/kanji_quick_details.html' %}
+<hr>
+
+<div class="row">
+	<div class="col-sm-4" style="max-width:400px;">
+		<h5>Radicals</h5>
+		<table class="table">
+			{% for oRadical in oKanji.radicals.all %}
+				<tr>
+					<th>{{ oRadical.character }}</th>
+					<td>{{ oRadical.meaning }}</td>
+				</tr>
+			{% endfor %}
+		</table>
+		<h5>Pronunciations</h5>
+		<table class="table">
+			{% for oPron in oKanji.pronunciation_set.all %}
+				<tr>
+					<th>{{ oPron.type }}</th>
+					<td>{{ oPron.pronunciation }}</td>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+	<div class="col-sm-8" style="max-width:800px;">
+		<h5>Words</h5>
+		<table class="table">
+			{% for oWord in oKanji.word_set.all %}
+				<tr>
+					<th style="min-width:8em;">{{ oWord.word }}</th>
+					<td style="min-width:9em;">{{ oWord.pronunciation }}</td>
+					<td>{{ oWord.get_simplified_definition }}</td>
+				</tr>
+			{% endfor %}
+		</table>
+	</div>
+</div>

@@ -59,9 +59,11 @@ $(document).ready(function() {
 			if (val == '0') {
 				var correct = false;
 				elem.addClass('btn-danger');
+				$('body').addClass('background-danger');
 			} else {
 				var correct = true;
 				elem.addClass('btn-success');
+				$('body').addClass('background-success');
 			}
 			// update progress for this concept
 			var url = "{% url 'study:quiz_submit_answer' %}";
@@ -92,7 +94,7 @@ $(document).ready(function() {
 
 <div class="row">
 	<div class="col-md-6">
-		<h1>Practice Kanji</h1>
+		<h1>Review</h1>
 		<hr>
 		<div class="display-1">{{question}}</div>
 		<hr>
@@ -106,7 +108,7 @@ $(document).ready(function() {
 	<div class="col-md-6">
 		<div id="correct-answer-div" style="display:none;">
 			<div style="text-align:right;">
-				<a href="{% url 'study:practice_kanji_in_progress' %}" class="btn btn-info btn-lg">
+				<a href="{% url 'study:review' %}" class="btn btn-info btn-lg">
 					Next Question
 					<i class="fa fa-arrow-circle-right" aria-hidden="true"></i>
 				</a>

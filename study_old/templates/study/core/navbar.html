@@ -21,25 +21,45 @@
 
 	    
 	    
+	    {% if user.allowed_to_learn_new_kanji %}
+		    <li class="nav-item {% if current_page == 'learn_new_kanji' %}active{% endif %}">
+		    	<a class="nav-link" href="{% url 'study:learn_new_kanji' %}">
+		        	  Learn New Kanji
+		        	  {% if current_page == 'learn_new_kanji' %}<span class="sr-only">(current)</span>{% endif %}
+		          </a>
+		    </li>
+		{% endif %}
+		{% if user.allowed_to_practice_unfinished_kanji %}
+		    <li class="nav-item {% if current_page == 'practice_kanji_in_progress' %}active{% endif %}">
+		    	<a class="nav-link" href="{% url 'study:practice_kanji_in_progress' %}">
+		        	  Practice Kanji
+		        	  {% if current_page == 'practice_kanji_in_progress' %}<span class="sr-only">(current)</span>{% endif %}
+		          </a>
+		    </li>
+		{% endif %}
+		{% if user.allowed_to_practice_unfinished_words %}
+		    <li class="nav-item {% if current_page == 'practice_words_in_progress' %}active{% endif %}">
+		    	<a class="nav-link" href="{% url 'study:practice_words_in_progress' %}">
+		        	  Practice Words
+		        	  {% if current_page == 'practice_words_in_progress' %}<span class="sr-only">(current)</span>{% endif %}
+		          </a>
+		    </li>
+		{% endif %}
+		{% if user.allowed_to_practice_completed_kanji %}
+		    <li class="nav-item {% if current_page == 'practice_completed_kanji' %}active{% endif %}">
+		    	<a class="nav-link" href="{% url 'study:practice_completed_kanji' %}">
+		        	  Review
+		        	  {% if current_page == 'practice_completed_kanji' %}<span class="sr-only">(current)</span>{% endif %}
+		          </a>
+		    </li>
+		{% endif %}
 
-	    <li class="nav-item {% if current_page == 'practice' %}active{% endif %}">
-	    	<a class="nav-link" href="{% url 'study:practice' %}">
-	        	  Practice
-	        	  {% if current_page == 'practice' %}<span class="sr-only">(current)</span>{% endif %}
+		<li class="nav-item {% if current_page == 'badges' %}active{% endif %}">
+	    	<a class="nav-link" href="{% url 'study:badges' %}">
+	        	  Badges
+	        	  {% if current_page == 'badges' %}<span class="sr-only">(current)</span>{% endif %}
 	          </a>
 	    </li>
-
-
-
-	    <li class="nav-item {% if current_page == 'review' %}active{% endif %}">
-	    	<a class="nav-link" href="{% url 'study:review' %}">
-	        	  Review
-	        	  {% if current_page == 'review' %}<span class="sr-only">(current)</span>{% endif %}
-	          </a>
-	    </li>
-
-
-		
 
 
 
@@ -50,9 +70,8 @@
     	<li class="nav-item {% if current_page == 'home' %}active{% endif %}">
 	    	<a class="nav-link" href="{% url 'study:home' %}">
 
-	        	  	  <span class="badge {% if user.count_started_kanji == 0 %}badge-danger{% else %}badge-success{% endif %}" 
-	        	  	  		style="font-size:1.3em;margin-top:-10px;margin-bottom:-10px;">
-	        	  	  	{{ user.count_started_kanji }} Kanji
+	        	  	  <span class="badge badge-success" style="font-size:1.3em;margin-top:-10px;margin-bottom:-10px;">
+	        	  	  	{{ user.count_completed_kanji }} Kanji
 	        	  	  </span>
 
 	        	  {% if current_page == 'home' %}<span class="sr-only">(current)</span>{% endif %}
@@ -61,25 +80,11 @@
 	    <li class="nav-item {% if current_page == 'word_list' %}active{% endif %}">
 	    	<a class="nav-link" href="{% url 'study:word_list' %}">
 
-	        	  	<span class="badge {% if user.count_started_words == 0 %}badge-danger{% else %}badge-success{% endif %}" 
-	        	  			style="font-size:1.3em;margin-top:-10px;margin-bottom:-10px;">
-	        	  		{{ user.count_started_words }} Words
+	        	  	<span class="badge badge-success" style="font-size:1.3em;margin-top:-10px;margin-bottom:-10px;">
+	        	  		{{ user.count_completed_words }} Words
 	        	  	</span>
 
 	        	  {% if current_page == 'word_list' %}<span class="sr-only">(current)</span>{% endif %}
-	          </a>
-	    </li>
-	    <li class="nav-item {% if current_page == 'badges' %}active{% endif %}">
-	    	<a class="nav-link" href="{% url 'study:badges' %}">
-	        	  <span class="badge {% if user.count_badges == 0 %}badge-danger{% else %}badge-success{% endif %}" 
-	        	  		style="font-size:1.3em;margin-top:-10px;margin-bottom:-10px;">
-	        	  	{{ user.count_badges }} Badges
-	        	  	{% if user.has_new_badges %}
-	        	  		<span style="color:yellow;">
-	        	  			<i class="fa fa-star" aria-hidden="true"></i>
-	        	  		</span>
-	        	  	{% endif %}
-	        	  </span>
 	          </a>
 	    </li>
       {% if user.is_authenticated %}

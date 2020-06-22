@@ -8,6 +8,8 @@ from study.models import ConceptUser, UserBadge
 from dictionary.models import LearnableConcept
 
 
+
+
 class User(AbstractUser):
     
     def score(self):
@@ -62,6 +64,36 @@ class User(AbstractUser):
             level=10
         )
         return qCU.count()
+    
+    def count_started_kanji(self):
+        qCU = ConceptUser.objects.filter(
+            user=self,
+            concept__type=LearnableConcept.TYPE_KANJI
+        )
+        return qCU.count()
+        
+    def count_started_words(self):
+        qCU = ConceptUser.objects.filter(
+            user=self,
+            concept__type=LearnableConcept.TYPE_WORD
+        )
+        return qCU.count()
+    
+    def count_badges(self):
+        qBadge = UserBadge.objects.filter(user=self)
+        return qBadge.count()
+    
+    def has_new_badges(self):
+        qBadge = UserBadge.objects.filter(user=self, user_alerted=False)
+        if qBadge:
+            return True
+        return False
+    
+    def mark_new_badges_viewed(self):
+        qBadge = UserBadge.objects.filter(user=self, user_alerted=False)
+        for oBadge in qBadge:
+            oBadge.user_alerted = True
+            oBadge.save()
     
     def badges_earned(self):
         qBadge = UserBadge.objects.filter(user=self)
