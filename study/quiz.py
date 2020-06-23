@@ -51,7 +51,10 @@ def build_a_quiz_for_word(oCU):
     quiz_types = ['pronunciation', 'definition']
     quiz_type = random.choice(quiz_types)
     answers = []
-    correct_answer = getattr(oCU.concept.word, quiz_type)
+    if quiz_type == 'definition':
+        correct_answer = oCU.concept.word.get_simplified_definition()
+    else:
+        correct_answer = getattr(oCU.concept.word, quiz_type)
     exclude = {quiz_type: correct_answer}
     qWord = Word.objects.exclude(**exclude).order_by('?')[:3]
     answers.append( [correct_answer, 1] )

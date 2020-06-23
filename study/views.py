@@ -77,7 +77,7 @@ def home(request):
     qConceptUserKanji = models.ConceptUser.objects.filter(
         user=request.user,
         concept__type=LearnableConcept.TYPE_KANJI
-    ).order_by('-created')
+    ).order_by('created')
     
     completed_count = models.ConceptUser.objects.filter(
         user=request.user,
@@ -115,7 +115,7 @@ def word_list(request):
     qConceptUserWord = models.ConceptUser.objects.filter(
         user=request.user,
         concept__type=LearnableConcept.TYPE_WORD
-    ).order_by('-created')
+    ).order_by('created')
     
     completed_count = models.ConceptUser.objects.filter(
         user=request.user,

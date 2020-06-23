@@ -18,6 +18,15 @@ $(document).ready(function() {
 });
 </script>
 
+<style>
+	.lookup-concept-detailed {
+		cursor:pointer;
+	}
+	.complete-concept-row td {
+		background-color: #adebbb;
+	}
+</style>
+
 
 <div class="row">
 	<div class="col-sm-6">
@@ -42,7 +51,7 @@ $(document).ready(function() {
 	</thead>
 	<tbody>
 		{% for oCU in qConceptUserWord %}
-			<tr class="lookup-concept-detailed {% if oCU.level == 10 %}table-success{% endif %}"
+			<tr class="lookup-concept-detailed {% if oCU.level == 10 %}complete-concept-row{% endif %}"
 					data-url={% url 'study:lookup_concept_detailed' oCU.concept.id %}>
 				<td style="text-align:center;font-size:1.6em;">
 					<strong>{{ oCU.concept.word.word }}</strong>

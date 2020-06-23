@@ -51,6 +51,9 @@ def quiz_submit_answer(request):
     response = {'just_completed' : False}
     context['oConceptUser'] = oConceptUser
     response['html_first'] = render_to_string('study/snippets/quiz_progress.html', context, request=request)
+    if correct:
+        request.user.score += 1
+        request.user.save()
     if correct and oConceptUser.level == 9:
         response['just_completed'] = True
     if correct and oConceptUser.level < 10:

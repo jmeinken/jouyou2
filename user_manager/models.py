@@ -1,22 +1,29 @@
 from __future__ import unicode_literals
 
+from django.db import models
+
 
 from django.contrib.auth.models import AbstractUser
 from django.db.models import Sum
 
 from study.models import ConceptUser, UserBadge
-from dictionary.models import LearnableConcept
+from dictionary.models import LearnableConcept, Kanji
 
 
 
 
 class User(AbstractUser):
     
-    def score(self):
-        qConcept = self.conceptuser_set.all()
-        score = qConcept.aggregate(score=Sum('level'))
-        return score['score']
-
+    score = models.IntegerField(default=0)
+    
+    def check_grade_complete(self, grade):
+        qKanji = Kanji.objects.filter(
+            grade=grade,
+        ).exclude(concept__conceptuser__user=self)
+        if not qKanji:
+            return True
+        return False
+    
     def allowed_to_learn_new_kanji(self):
         qConcept = ConceptUser.objects.filter(
             user=self,

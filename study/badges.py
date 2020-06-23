@@ -16,7 +16,7 @@ badge_list = {
         'task' : 'Earn 5,000 yen',
         'label' : '💸',
     },
-    'baller' :{
+    'boss man' :{
         'task' : 'Earn 10,000 yen',
         'label' : '🤑',
     },
@@ -52,13 +52,45 @@ badge_list = {
         'task' : 'master 2000 words',
         'label' : '🤯',
     },
+    'One-derful Student' : {
+        'task' : 'Master all first grade kanji',
+        'label' : '👨‍💻',
+    },
+    'Two Cool' : {
+        'task' : 'Master all second grade kanji',
+        'label' : '😎',
+    },
+    'Bruce Three' : {
+        'task' : 'Master all third grade kanji',
+        'label' : '🥋',
+    },
+    'Krazy Four Kanji' : {
+        'task' : 'Master all fourth grade kanji',
+        'label' : '🤪',
+    },
+    'High Five' : {
+        'task' : 'Master all fifth grade kanji',
+        'label' : '🖐️',
+    },
+    'I\'m Too Six-y' : {
+        'task' : 'Master all sixth grade kanji',
+        'label' : '🧜‍♂️',
+    },
+    'Stairway to Seven' : {
+        'task' : 'Master all seventh grade kanji',
+        'label' : '🌌',
+    },
+    'Eight Baller' : {
+        'task' : 'Master all eigth grade kanji',
+        'label' : '🎱',
+    },
     'word walker' :{
         'task' : 'master 5 kanji containing the leg (儿)  radical',
         'label' : '🚶‍',
     },
     'Mr. White' :{
         'task' : 'master 5 kanji containing the white (白)  radical',
-        'label' : '😎',
+        'label' : '💀',
     },
     'earth worm' :{
         'task' : 'master 10 kanji containing the ground (土)  radical',
@@ -88,16 +120,31 @@ badge_list = {
 }
 
 
-
 def check_if_badge_earned(badge_name, oUser):
+    if badge_name == 'One-derful Student':
+        return True if oUser.check_grade_complete(1) else False
+    if badge_name == 'Two Cool':
+        return True if oUser.check_grade_complete(2) else False
+    if badge_name == 'Bruce Three':
+        return True if oUser.check_grade_complete(3) else False
+    if badge_name == 'Krazy Four Kanji':
+        return True if oUser.check_grade_complete(4) else False
+    if badge_name == 'High Five':
+        return True if oUser.check_grade_complete(5) else False
+    if badge_name == 'I\'m Too Six-y':
+        return True if oUser.check_grade_complete(6) else False
+    if badge_name == 'Stairway to Seven':
+        return True if oUser.check_grade_complete(6) else False # there aren't any grade 7 kanji
+    if badge_name == 'Eight Baller':
+        return True if oUser.check_grade_complete(8) else False
     if badge_name == 'money man':
-        return True if oUser.score() >= 100 else False
+        return True if oUser.score >= 100 else False
     if badge_name == 'super saver':
-        return True if oUser.score() >= 1000 else False
+        return True if oUser.score >= 1000 else False
     if badge_name == 'high roller':
-        return True if oUser.score() >= 5000 else False
-    if badge_name == 'baller':
-        return True if oUser.score() >= 10000 else False
+        return True if oUser.score >= 5000 else False
+    if badge_name == 'boss man':
+        return True if oUser.score >= 10000 else False
     if badge_name == 'kanji baby':
         return True if oUser.count_completed_kanji() >= 10 else False
     if badge_name == 'kanji boy':
