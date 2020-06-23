@@ -36,7 +36,7 @@ class Command(BaseCommand):
             "dictionary.Radical",
             "dictionary.Kanji",
             "dictionary.Pronunciation",
-            "chiron.Word",
+            "dictionary.Word",
             indent=4,
             output=output_path,
         )
