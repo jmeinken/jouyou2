@@ -81,7 +81,7 @@ class ConceptUser(models.Model):
         if not self.concept.type == 'kanji':
             return
         # get all words that contain this kanji and have not already been unlocked
-        qWord = self.concept.kanji.word_set.all()
+        qWord = self.concept.kanji.word_set.filter(useful=True)
         qWord = qWord.exclude(concept__conceptuser__user=oUser)
         # for each word, check if all kanji are completed
         words = []
